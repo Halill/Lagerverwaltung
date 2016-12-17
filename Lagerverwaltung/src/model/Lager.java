@@ -9,6 +9,44 @@ public class Lager {
 	private int bestand;
 	private Lager elternlager;
 	private ArrayList<Lager> kindlager = new ArrayList<Lager>();
+	private static int ROOTLAGER = 0, TREELAGER = 1, LEAFLAGER = 2; 
+	
+	
+	/*Erklärung der Lagerstatus:
+	 * Rootlager:
+	 * Das Lager an der obersten Stelle in der Hierarchie
+	 * 
+	 * Treelager:
+	 * Die Lager, die zwischen dem Rootlager und den Leaflagern liegen
+	 * 
+	 * Leaflager:
+	 * Die Lager, an der untersten Stelle in der Hierarchie
+	 * 
+	 */
+	public int setLagerStatus(){
+		if(this.elternlager==null && this.kindlager.isEmpty()==false){
+			return ROOTLAGER;
+		}
+		if(this.elternlager!=null && this.kindlager.isEmpty()==false){
+			return TREELAGER;
+		}
+		if (this.elternlager!=null && this.kindlager.isEmpty()){
+			return LEAFLAGER;
+		}
+		return 5;	
+	}
+	public String getLagerStatus(){
+		if(this.setLagerStatus()==ROOTLAGER){
+			return "Rootlager";
+		}
+		if(this.setLagerStatus()==TREELAGER){
+			return "Treelager";
+		}
+		if(this.setLagerStatus()==LEAFLAGER){
+			return "Leaflager";
+		}
+		return "5";
+	}
 	
 	public String getName() {
 		return name;
@@ -45,6 +83,13 @@ public class Lager {
 		kindlager.elternlager = this;
 	}
 	
+	public void deleteKindlager(Lager l){
+		for(int i = 0; i < this.kindlager.size(); i++){
+			if(this.kindlager.get(i)==l){
+				this.kindlager.remove(i);
+			}
+		}
+	}
 	
 	public  int durchlaufenKapazitaet(){
 		int kapazitaet = 0;

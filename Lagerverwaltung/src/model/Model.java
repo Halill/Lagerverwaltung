@@ -2,20 +2,15 @@ package model;
 
 import java.util.ArrayList;
 
-public class Model extends Lager{
+public class Model{
 	
 	private ArrayList<Lager> lagerliste = new ArrayList<Lager>();
 	
 	public Lager lagerAnlegen(String name, int kapazitaet, int bestand){
-		//String elternlager, String[] kindlager
 		Lager lager = new Lager();
 		lager.setName(name);
 		lager.setKapazitaet(kapazitaet);
 		lager.setBestand(bestand);
-//		lager.setElternlager(elternlager);
-//		lager.setKindlager(kindlager);
-		
-		
 		lagerliste.add(lager);
 		return lager;
 	}
@@ -27,7 +22,51 @@ public class Model extends Lager{
 	public void setLagerliste(ArrayList<Lager> lagerliste) {
 		this.lagerliste = lagerliste;
 	}
+	//Lager Einfügen Methode für Fall 2: so wird das neue Lager zwischen zwei Lagern eingefügt
+	public void neuesLagereinfuegen(Lager elternlager, Lager kindlager, Lager neueslager){
+		//Das neue Lager wird über das Kindlager eingefügt
+		neueslager.setKindlager(kindlager);
+		//Das neue Lager wird unter dem Elternlager eingefügt
+		elternlager.setKindlager(neueslager);
+		elternlager.deleteKindlager(kindlager);
+		
+		neueslager.setKapazitaet(kindlager.getKapazitaet());
+		neueslager.setBestand(kindlager.getBestand());	
+	}
 	
+	//Lager Einfügen Methode für Fall 1 und 3
+	public void neuesLagereinfuegen(Lager lager, Lager neueslager){
+		//Fall 3
+		if(lager.getKindlager().isEmpty()) lager.setKindlager(neueslager);
+		//Fall 1
+		else neueslager.setKindlager(lager);
+		
+		//in beiden Fällen wird Kapazitaet und der Bestand vom anderen Lager übernommen
+		neueslager.setKapazitaet(lager.getKapazitaet());
+		neueslager.setBestand(lager.getBestand());
+	}
+	
+	public void sysoLagerstruktur(ArrayList<Lager> lagerliste){
+		for(Lager lager : lagerliste){
+			System.out.println("\nLagername: " + lager.getName() + ", " + "Kapazitaet: " + lager.getKapazitaet() + "," +
+					"Bestand: " + lager.getBestand() + "," + "Lagerstatus: " + lager.getLagerStatus());
+			
+			if(lager.getElternlager()!=null) System.out.print("Elternlager: " + lager.getElternlager().getName());
+			else System.out.print("Elternlager: kein Elternlager vorhanden");
+			if(lager.getKindlager().isEmpty()==false){
+				System.out.print(" , Kindlager: ");
+				for(Lager l : lager.getKindlager()){
+					System.out.print(l.getName() + ",");
+				}
+			}
+			else{
+				System.out.println(" , Kindlager: keine Kindlager vorhanden");
+			}
+
+
+		}
+		
+	}
 	public void legeInitialeStrukturFest(){
 		
 		Lager hannover = lagerAnlegen("Hannover-Misburg", 1000, 500);
@@ -55,6 +94,9 @@ public class Model extends Lager{
 		deutschland.setKindlager(mv);
 		deutschland.setKapazitaet(deutschland.durchlaufenKapazitaet());
 		deutschland.setBestand(deutschland.durchlaufenBestand());
+		for(Lager l : lagerliste){
+			l.setLagerStatus();
+		}
 		
 	}
 
