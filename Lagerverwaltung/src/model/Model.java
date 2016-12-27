@@ -67,6 +67,11 @@ public class Model{
 		}
 		
 	}
+	
+	/**
+	 * Legt die initiale Lagerstruktur an.
+	 * 
+	 */
 	public void legeInitialeStrukturFest(){
 		
 		Lager hannover = lagerAnlegen("Hannover-Misburg", 1000, 500);

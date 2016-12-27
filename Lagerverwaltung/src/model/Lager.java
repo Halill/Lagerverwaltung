@@ -1,18 +1,28 @@
 package model;
-
+/**
+ * @author Halil
+ * Die Klasse Lager im Package Model.
+ * 
+ * In dieser Klasse sind Methoden enthalten, die die Lager-Attribute verändern und ausgeben können.
+ */
 import java.util.ArrayList;
 
 public class Lager {
 	
+	/** Attribut Name*/
 	private String name;
+	/** Attribut Kapazität*/
 	private int kapazitaet;
+	/** Attribut Bestand*/
 	private int bestand;
+	/** Attribut Elternlager. Setzt die Beziehung zu einem "höheren" Lager.*/
 	private Lager elternlager;
+	/** Attribut Kindlager. Eine Liste, die die Lager unter diesem Lager enthält.*/
 	private ArrayList<Lager> kindlager = new ArrayList<Lager>();
-	private static int ROOTLAGER = 0, TREELAGER = 1, LEAFLAGER = 2; 
-	
-	
-	/*Erklärung der Lagerstatus:
+	/** 
+	 * @author Halil
+	 * Attribut Lagerstatus.
+	 * Erklärung der Lagerstatus:
 	 * Rootlager:
 	 * Das Lager an der obersten Stelle in der Hierarchie
 	 * 
@@ -21,6 +31,17 @@ public class Lager {
 	 * 
 	 * Leaflager:
 	 * Die Lager, an der untersten Stelle in der Hierarchie
+	 * 
+	 */
+	private static int ROOTLAGER = 0, TREELAGER = 1, LEAFLAGER = 2; 
+	
+	
+	/**
+	 * @author Halil
+	 * Methode zum setzen des Lagerstatus. Kann erst nachdem die Lagerstruktur aufgebaut wurde, ausgeführt werden, da sonst Fehler entstehen.
+	 * Deswegen wird diese Methode in der Methode der Klasse Model @see {@link Model#legeInitialeStrukturFest()} erst nachdem alle Lager angelegt wurden aufgerufen.
+	 * 
+	 * @return Setzt den Lagerstatus eines Lagers. Trifft keine Bedingung ein, so wird ein anderer Wert (5) ausgegeben.
 	 * 
 	 */
 	public int setLagerStatus(){
@@ -35,6 +56,13 @@ public class Lager {
 		}
 		return 5;	
 	}
+	
+	/**
+	 * @author Halil
+	 * Methode zum ausgeben des Lagerstatus. Kann erst nachdem die Methode @see {@link Lager#setLagerStatus()} ausgeführt werden, da beim Anlegen dieser Wert noch nicht gesetzt wurde.
+	 * 
+	 * @return gibt den aktuellen Lagerstatus als String aus. Falls das Lager keine der drei Status besitzt, wird die 5 ausgegeben, damit man Fehler erkennt.
+	 */
 	public String getLagerStatus(){
 		if(this.setLagerStatus()==ROOTLAGER){
 			return "Rootlager";
@@ -48,13 +76,29 @@ public class Lager {
 		return "5";
 	}
 	
+	/**
+	 * Methode zum ausgeben des Lagernamens. Kann erst nachdem die Methode @see {@link Lager#setName(String)} oder @see {@link Model#lagerAnlegen(String, int, int)} fehlerfrei
+	 * ausgeführt werden, da sonst der Lagername noch nicht gesetzt wurde.
+	 * Diese Methode wird hauptsächlich in der Methode @see {@link Model#sysoLagerstruktur(ArrayList)} verwendet.
+	 * @return gibt den Lagernamen als String aus.
+	 */
 	public String getName() {
 		return name;
 	}
+	/**
+	 * @author Halil
+	 * 
+	 * Methode zum setzen des Lagernamens. Wird hauptsächlich in der Methode @see {@link Model#lagerAnlegen(String, int, int)} verwendet.
+	 * @param name der Name eines Lagers wird per String gesetzt.
+	 * 
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	/**
+	 * 
+	 * @return
+	 */
 	public int getKapazitaet() {
 		return kapazitaet;
 	}
