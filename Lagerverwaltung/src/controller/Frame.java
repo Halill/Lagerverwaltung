@@ -16,7 +16,7 @@ public class Frame
 		frame = new JFrame(WindowName);
 		frame.setSize(x,y);
 		frame.setDefaultCloseOperation(3);
-		return frame;
+		return frame;	
 	}
 	
 	public JPanel Panel(int sizex, int sizey, int posx,int posy)
