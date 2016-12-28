@@ -68,8 +68,9 @@ public class Welcome {
 		
 		JButton new_inventory = new JButton("Neues Lager");
 		new_inventory.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
+			public void actionPerformed(ActionEvent arg0) {				
+				Warehouse window = new Warehouse();
+				window.frame.setVisible(true);				
 			}
 		});
 		new_inventory.setBounds(45, 168, 126, 56);
