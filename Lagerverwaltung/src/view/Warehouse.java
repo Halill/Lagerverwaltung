@@ -75,7 +75,7 @@ public class Warehouse {
 		
 		//m.sysoLagerstruktur(lagerl);
 		
-		Lager neuesLager = m.lagerAnlegen("neues Lager", 0, 0);
+	//	Lager neuesLager = m.lagerAnlegen("neues Lager", 0, 0);
 
 //		Test für Fall 1: Das neue Lager wird über Deutschland angelegt
 //		m.neuesLagereinfuegen(lagerl.get(9), neuesLager);
@@ -88,33 +88,36 @@ public class Warehouse {
 		
 		m.sysoLagerstruktur(lagerl);
 		
-		MutableTreeNode root = null;
+		MutableTreeNode root = new DefaultMutableTreeNode("Gesamtlager");
 		MutableTreeNode[] nodes = new MutableTreeNode[lagerl.size()];
-		
+		MutableTreeNode lastsubroot = null,lastTree = null;
 		
 		
 		for(int i = 0; i < lagerl.size();i++)
 		{
 			nodes[i] = new DefaultMutableTreeNode(lagerl.get(i).getName());
 			
-			if(lagerl.get(i).getLagerStatus() == "Rootlager" && root == null)
+			if(lagerl.get(i).getLagerStatus() == "Rootlager")
 			{
-				root = new DefaultMutableTreeNode(lagerl.get(i).getName());
+				root.insert(nodes[i], root.getChildCount());
+				lastsubroot = nodes[i];
 			}
 			if(lagerl.get(i).getLagerStatus() == "Treelager")
 			{
-				if(root != null)
+				if(lastsubroot != null)
 				{
-					root.insert(nodes[i], root.getChildCount());
+					lastsubroot.insert(nodes[i], lastsubroot.getChildCount());
+					lastTree = nodes[i];
 				}
 				else
 					System.out.println(nodes[i] + " konnte nicht erstellt werden");
 			}
 			if(lagerl.get(i).getLagerStatus() == "Leaflager")
 			{
-				if(root != null && Arrays.asList(root.children()).contains(lagerl.get(i).getElternlager().getName()))
+				if(lastTree != null)
 				{
-					root.insert(nodes[i], root.getChildCount());
+					MutableTreeNode node = addInfo(nodes[i],lagerl.get(i));
+					lastTree.insert(node, lastTree.getChildCount());
 				}
 				else
 					System.out.println(nodes[i] + " konnte nicht erstellt werden");
@@ -160,6 +163,12 @@ public class Warehouse {
 		scrollPane.add(abbuchen);
 		
 		
+	}
+
+	private MutableTreeNode addInfo(MutableTreeNode node, Lager lager) 
+	{
+		node = new DefaultMutableTreeNode(lager.getName() + " (Kapazitaet: " + lager.getKapazitaet() + " Bestand: " + lager.getBestand() + ")");
+		return node;
 	}
 
 	private void createIButton(int i) 
