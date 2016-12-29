@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 
 import javax.swing.JTree;
 import javax.swing.JButton;
@@ -88,10 +89,9 @@ public class Warehouse {
 		
 		m.sysoLagerstruktur(lagerl);
 		
-		MutableTreeNode root = new DefaultMutableTreeNode("Gesamtlager");
-		MutableTreeNode[] nodes = new MutableTreeNode[lagerl.size()];
-		MutableTreeNode lastsubroot = null,lastTree = null;
-		
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Gesamtlager");
+		DefaultMutableTreeNode[] nodes = new DefaultMutableTreeNode[lagerl.size()];
+		DefaultMutableTreeNode node;
 		
 		for(int i = 0; i < lagerl.size();i++)
 		{
@@ -99,30 +99,44 @@ public class Warehouse {
 			
 			if(lagerl.get(i).getLagerStatus() == "Rootlager")
 			{
+				if(lagerl.get(i).getKindlager().size() == 0)
+					nodes[i] = addInfo(nodes[i], lagerl.get(i));
 				root.insert(nodes[i], root.getChildCount());
-				lastsubroot = nodes[i];
 			}
 			if(lagerl.get(i).getLagerStatus() == "Treelager")
 			{
-				if(lastsubroot != null)
+				node = findNode(root,lagerl.get(i).getElternlager().getName());
+				if(node != null)
 				{
-					lastsubroot.insert(nodes[i], lastsubroot.getChildCount());
-					lastTree = nodes[i];
+					if(lagerl.get(i).getKindlager().size() == 0)
+						nodes[i] = addInfo(nodes[i], lagerl.get(i));
+					node.insert(nodes[i], node.getChildCount());							
 				}
 				else
 					System.out.println(nodes[i] + " konnte nicht erstellt werden");
 			}
 			if(lagerl.get(i).getLagerStatus() == "Leaflager")
 			{
-				if(lastTree != null)
+				node = findNode(root,lagerl.get(i).getElternlager().getName());
+				if(node != null)
 				{
-					MutableTreeNode node = addInfo(nodes[i],lagerl.get(i));
-					lastTree.insert(node, lastTree.getChildCount());
+					if(lagerl.get(i).getKindlager().size() == 0)
+						nodes[i] = addInfo(nodes[i], lagerl.get(i));
+					node.insert(nodes[i], node.getChildCount());							
 				}
 				else
 					System.out.println(nodes[i] + " konnte nicht erstellt werden");
 			}			
 							
+		}
+		
+		for(int i = 0; i < lagerl.size(); i++)
+		{
+			if(lagerl.get(i).getLagerStatus() == "Rootlager" && nodes[i].getChildCount() == 0)
+			{
+				node = addInfo(nodes[i],lagerl.get(i));
+			    ((DefaultTreeModel) inventory.getModel()).nodeChanged(node);
+			}	
 		}
 		
 	    
@@ -164,8 +178,20 @@ public class Warehouse {
 		
 		
 	}
+	private DefaultMutableTreeNode findNode(DefaultMutableTreeNode root, String s) {
+	    @SuppressWarnings("unchecked")
+	    Enumeration<DefaultMutableTreeNode> e = root.depthFirstEnumeration();
+	    while (e.hasMoreElements()) {
+	        DefaultMutableTreeNode node = e.nextElement();
+	        if (node.toString().equalsIgnoreCase(s)) {
+	            return node;
+	        }
+	    }
+	    return null;
+	}
+	
 
-	private MutableTreeNode addInfo(MutableTreeNode node, Lager lager) 
+	private DefaultMutableTreeNode addInfo(DefaultMutableTreeNode node, Lager lager) 
 	{
 		node = new DefaultMutableTreeNode(lager.getName() + " (Kapazitaet: " + lager.getKapazitaet() + " Bestand: " + lager.getBestand() + ")");
 		return node;
