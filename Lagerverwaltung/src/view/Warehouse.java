@@ -11,6 +11,8 @@ import java.awt.Color;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.JTree;
 import javax.swing.JButton;
@@ -20,6 +22,14 @@ import javax.swing.UIManager;
 import javax.swing.JList;
 import java.awt.BorderLayout;
 import java.awt.ScrollPane;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreePath;
+
+import model.Lager;
+import model.Model;
+
+import javax.swing.tree.DefaultMutableTreeNode;
 
 public class Warehouse {
 
@@ -57,12 +67,70 @@ public class Warehouse {
 
 	private void load_Inventory() 
 	{		
-		Object root = inventory.getModel().getRoot();	
+		Model m = new Model();
+
+		ArrayList<Lager> lagerl = new ArrayList<Lager>();
+		m.legeInitialeStrukturFest();
+		lagerl = m.getLagerliste();
+		
+		//m.sysoLagerstruktur(lagerl);
+		
+		Lager neuesLager = m.lagerAnlegen("neues Lager", 0, 0);
+
+//		Test für Fall 1: Das neue Lager wird über Deutschland angelegt
+//		m.neuesLagereinfuegen(lagerl.get(9), neuesLager);
+		
+//		Test für Fall 2: Das neue Lager wird zwischen Deutschland und MV eingefügt
+//		m.neuesLagereinfuegen(lagerl.get(9), lagerl.get(8), neuesLager);
+		
+//		Test für Fall 3: Das neue Lager wird unter MV eingefügt
+//		m.neuesLagereinfuegen(lagerl.get(8), neuesLager);
+		
+		m.sysoLagerstruktur(lagerl);
+		
+		MutableTreeNode root = null;
+		MutableTreeNode[] nodes = new MutableTreeNode[lagerl.size()];
+		
+		
+		
+		for(int i = 0; i < lagerl.size();i++)
+		{
+			nodes[i] = new DefaultMutableTreeNode(lagerl.get(i).getName());
+			
+			if(lagerl.get(i).getLagerStatus() == "Rootlager" && root == null)
+			{
+				root = new DefaultMutableTreeNode(lagerl.get(i).getName());
+			}
+			if(lagerl.get(i).getLagerStatus() == "Treelager")
+			{
+				if(root != null)
+				{
+					root.insert(nodes[i], root.getChildCount());
+				}
+				else
+					System.out.println(nodes[i] + " konnte nicht erstellt werden");
+			}
+			if(lagerl.get(i).getLagerStatus() == "Leaflager")
+			{
+				if(root != null && Arrays.asList(root.children()).contains(lagerl.get(i).getElternlager().getName()))
+				{
+					root.insert(nodes[i], root.getChildCount());
+				}
+				else
+					System.out.println(nodes[i] + " konnte nicht erstellt werden");
+			}			
+							
+		}
+		
+	    
+		DefaultTreeModel model = new DefaultTreeModel(root);
+		inventory.setModel(model);	
+		
 		int count =  inventory.getModel().getChildCount(root);
 		naviButtons = new JButton[count];
 		
 		
-		//Lädt die Root Lager in die Navigations Liste
+		//Lädt die Ober-Lager in die Navigations Liste
 		for(int i=0;i < count;i++)
 		{
 			System.out.println(inventory.getModel().getChild(root, i));
@@ -96,16 +164,15 @@ public class Warehouse {
 
 	private void createIButton(int i) 
 	{
-		JPanel navigationBar = (JPanel)frame.getContentPane().getComponent(0);	//Lädt den JPanel aus der Componenten Liste
-		
 		naviButtons[i] = new JButton("Lager " + (1 + i));
 		naviButtons[i].setSize(navigationBar.getSize().width,30);
 		naviButtons[i].setLocation(0,i * 30);	
 		
 		naviButtons[i].addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				int row = i + 1;
-				inventory.expandRow(row);
+				int row = i;
+
+
 			}
 		});
 		scrollPane.add(naviButtons[i]);

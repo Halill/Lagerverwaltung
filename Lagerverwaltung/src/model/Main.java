@@ -12,8 +12,6 @@ public class Main {
 		lagerl = m.getLagerliste();
 		
 		m.sysoLagerstruktur(lagerl);
-		
-		Lager neuesLager = m.lagerAnlegen("neues Lager", 0, 0);
 
 //		Test für Fall 1: Das neue Lager wird über Deutschland angelegt
 //		m.neuesLagereinfuegen(lagerl.get(9), neuesLager);
@@ -24,7 +22,7 @@ public class Main {
 //		Test für Fall 3: Das neue Lager wird unter MV eingefügt
 //		m.neuesLagereinfuegen(lagerl.get(8), neuesLager);
 		
-		m.sysoLagerstruktur(lagerl);
+		//m.sysoLagerstruktur(lagerl);
 
 		
 	}
