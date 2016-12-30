@@ -5,12 +5,13 @@ package model;
  * In dieser Klasse wird die Lagerstruktur festgelegt. Hier sind Methoden, die diese verändern.
  */
 import java.util.ArrayList;
-import java.util.concurrent.SynchronousQueue;
+
 
 public class Model{
 	
 	/**Liste aller Lager, die in der Lagerstruktur enthalten sind.*/
 	private ArrayList<Lager> lagerliste = new ArrayList<Lager>();
+	/**Liste aller Buchungen, die je mit der Anwendung erstellt worden sind. */
 	private ArrayList<Buchung> buchungliste = new ArrayList<Buchung>();
 	/**
 	 * Die zentrale Methode, mit der neue Lager angelegt werden. 
@@ -136,6 +137,11 @@ public class Model{
 
 
 	}
+	/**
+	 * Methode, die den Restbestand eines Rootlagers errechnet, also der maximal buchbaren Restkapazitäten 
+	 * @param lagerliste benötigt hierzu die Gesamtlagerliste vom Model, kann auch je nach Bedarf für Treelager verwendet werden.
+	 * @return gibt den Restbestand eines Rootlagers aus
+	 */
 	public int addiereRestLagerBestand(ArrayList<Lager> lagerliste){
 		int restbestand = 0;
 		for(Lager l : lagerliste){
@@ -167,9 +173,19 @@ public class Model{
 			else System.out.println(" , Kindlager: keine Kindlager vorhanden");
 		}
 		
-	}
-	
-
+	}	
+	/**
+	 * Sortiert eine Lagerliste nach folgendem Schema:
+	 * Rootlager
+	 * Treelager, alle Lager unter diesem Lager
+	 * Treelager, alle Lager unter diesem Lager
+	 * ...
+	 * Leaflager (die direkt unter dem Rootlager liegen)
+	 * Rootlager
+	 * ...
+	 * @param lagerliste Lagerliste mit Lagern. Wird genutzt für die Sortierung der Gesamtlagerliste im Model
+	 * @return gibt eine sortierte Lagerliste wieder
+	 */
 	private ArrayList<Lager> sortiereLagerliste(ArrayList<Lager> lagerliste){
 		ArrayList<Lager> lagerl = new ArrayList<Lager>();
 		for(Lager lager : lagerliste){
@@ -249,39 +265,67 @@ public class Model{
 		}
 		lagerliste = sortiereLagerliste(lagerliste);
 	}
-	
+	/**
+	 * Prüft, ob die Menge einer Buchung nicht die Restkapazitäten des Rootlagers übersteigen
+	 * @param menge Buchungsmenge einer Buchung
+	 * @return gibt true aus, falls die Prüfung erfolgreich war (also das die Buchungsmenge kleinergleich dem Restbestand ist)
+	 */
 	public Boolean pruefeBuchungsmenge(int menge){
 		if(addiereRestLagerBestand(lagerliste)<=menge) return false;
 		else return true;
 	}
-	public Buchung neueBuchung(int menge, ArrayList<Lager> lagerliste){
+	/**
+	 * Erstellt eine neue Buchung. Zunächst wird hier nur die Menge festgelegt.
+	 * Da die Auswahl der Lager dynamisch im Fenster der View generiert werden, werden hier noch keine Lager eingegeben. Das Datum einer Buchung wird aus bei der Methode
+	 * {@link Model#fuehreBuchungenaus()} gesetzt, da dann die tatsächliche Buchung stattfindet.
+	 * Der Buchungsschlüssel und der Buchungstyp werden auch erst im Fenster festgelegt.
+	 * @param menge Menge einer Buchung
+	 * @return gibt eine neues Buchungs-Objekt aus
+	 */
+	public Buchung neueBuchung(int menge){
 		Buchung buchung = new Buchung();
-		buchung.setBuchungLagerListe(lagerliste);
-		buchung.setDatum();
 		if(pruefeBuchungsmenge(menge)) buchung.setMenge(menge);
 		buchungliste.add(buchung);
 		return buchung;
 	}
+	/**
+	 * Gibt die Gesamtbuchungsliste wieder
+	 * @return Gesamtbuchungsliste der Model-Klasse
+	 */
 	public ArrayList<Buchung> getBuchungliste() {
 		return buchungliste;
 	}
+	/**
+	 * Setter-Methode zur Gesamtbuchungsliste.
+	 * @param buchungliste Buchungsliste, die die aktuelle Buchungsliste überschreibt
+	 */
 	public void setBuchungliste(ArrayList<Buchung> buchungliste) {
 		this.buchungliste = buchungliste;
 	}
+	/**
+	 * System.out.println() einer Buchungsliste
+	 * @param buchungliste hier wird hauptsächlich die Gesamtbuchungsliste verwendet, oder die spezifischen Buchungslisten der Lager
+	 */
 	public void sysoBuchungsliste(ArrayList<Buchung> buchungliste){
 		for(Buchung b : buchungliste){
-			System.out.println(b.getBuchungstyp());
-			System.out.println(b.getMenge());
-			System.out.println(b.getDatum());
+			System.out.println("Buchungstyp: " + b.getBuchungstyp());
+			System.out.println("Buchungsmenge: " + b.getMenge());
+			System.out.println("Buchungsdatum: " + b.getDatum());
 		}
 	}
-	public void fuehreBuchungenaus(Double[] schluessel){
+	/**
+	 * Diese Methode führt die Buchungen aus. Hier wird das Buchungsdatum und die Buchungszeit gesetzt.
+	 * Hier wird unterschieden, ob es sich um eine Zubuchung oder um eine Abbuchung handelt.
+	 */
+	public void fuehreBuchungenaus(){
 		for(Buchung b : buchungliste){
 			if(pruefeBuchungsmenge(b.getMenge()) && b.getBuchungstyp()=="Zubuchung"){
-				b.zubuchen(schluessel);
+				b.zubuchen();
+				b.setDatum();
 			}
 			if(pruefeBuchungsmenge(b.getMenge()) && b.getBuchungstyp()=="Abbuchung"){
-				b.abbuchen(schluessel);
+				b.abbuchen();
+				b.setDatum();
 			}
 		}
 	}
