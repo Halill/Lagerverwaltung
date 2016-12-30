@@ -22,8 +22,6 @@ public class Main {
 //		Test für Fall 3: Das neue Lager wird unter MV eingefügt
 //		m.neuesLagereinfuegen(lagerl.get(8), neuesLager);
 		
-		//m.sysoLagerstruktur(lagerl);
-
-		
+		//m.sysoLagerstruktur(lagerl);		
 	}
 }

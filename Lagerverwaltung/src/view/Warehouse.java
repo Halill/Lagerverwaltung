@@ -31,6 +31,10 @@ import model.Lager;
 import model.Model;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.TreeSelectionEvent;
 
 public class Warehouse {
 
@@ -148,10 +152,10 @@ public class Warehouse {
 		
 		
 		//Lädt die Ober-Lager in die Navigations Liste
-		for(int i=0;i < count;i++)
+		for(int i=0;i < root.getChildCount();i++)
 		{
 			System.out.println(inventory.getModel().getChild(root, i));
-			createIButton(i);
+			createIButton(i,root);
 		}
 		
 		//Lädt die Buchen und Abbuchen Buttons
@@ -188,8 +192,7 @@ public class Warehouse {
 	        }
 	    }
 	    return null;
-	}
-	
+	}	
 
 	private DefaultMutableTreeNode addInfo(DefaultMutableTreeNode node, Lager lager) 
 	{
@@ -197,16 +200,20 @@ public class Warehouse {
 		return node;
 	}
 
-	private void createIButton(int i) 
+	private void createIButton(int i, DefaultMutableTreeNode root) 
 	{
-		naviButtons[i] = new JButton("Lager " + (1 + i));
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) root.getChildAt(i);
+		TreePath path = new TreePath(node.getPath());
+		String name = root.getChildAt(i).toString().split("\\(")[0];
+		
+		naviButtons[i] = new JButton(name);
 		naviButtons[i].setSize(navigationBar.getSize().width,30);
 		naviButtons[i].setLocation(0,i * 30);	
 		
 		naviButtons[i].addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				int row = i;
-
+				inventory.setSelectionPath(path);
+				inventory.expandPath(path);
 
 			}
 		});
@@ -230,19 +237,26 @@ public class Warehouse {
 		navigationBar.setLayout(new BorderLayout(0, 0));
 		
 		scrollPane = new JScrollPane();
-		navigationBar.add(scrollPane, BorderLayout.CENTER);
-		
-		inventory = new JTree();
-		inventory.setBounds(205, 0, 638, 455);
-		frame.getContentPane().add(inventory);
-
+		navigationBar.add(scrollPane, BorderLayout.CENTER);		
 		
 		JPanel panel_Border = new JPanel();
 		panel_Border.setBackground(SystemColor.inactiveCaptionBorder);
 		panel_Border.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Lager A1", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		panel_Border.setBounds(0, 454, 843, 226);
 		frame.getContentPane().add(panel_Border);
-		panel_Border.setLayout(null);
+		panel_Border.setLayout(null);		
+		
+		inventory = new JTree();
+		inventory.addTreeSelectionListener(new TreeSelectionListener() {
+			public void valueChanged(TreeSelectionEvent evn) {
+				panel_Border.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), evn.getPath().toString().split("\\(")[0], TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
+				System.out.println("");
+			}
+		});
+		inventory.setBounds(205, 0, 638, 455);
+		frame.getContentPane().add(inventory);
+
+
 		
 		JPanel panel = new JPanel();
 		panel.setBounds(6, 16, 833, 199);
