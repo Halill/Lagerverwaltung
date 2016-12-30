@@ -183,38 +183,75 @@ public class Lager extends Observable implements Observer{
 	}
 	/**
 	 * Methode, die die Kapazitäten in den Kindlagern addiert. Diese Methode wird genutzt, um die Kapazitäten der Elternlager zu berechnen, da diese die
-	 * Kapazitäten der Kindlager erhalten. Wird hauptsächlich in der Methode @see {@link Model#legeInitialeStrukturFest()} genutzt.
-	 * !Wichtig! Diese Methode geht nur durch eine Ebene und nicht alle Ebenen der Kindlager eines Elternlagers. Die Kapazitäten der Kindlager, von Kindlagern werden 
-	 * nicht berücksichtigt und müssen vorher berechnet werden.
+	 * Kapazitäten der Kindlager erhalten.
+
 	 * @return die Gesamtkapazität der Kindlager als int.
 	 */
 	public  int durchlaufenKapazitaet(){
 		int kapazitaet = 0;
-		for(Lager l : this.kindlager){
-			kapazitaet = kapazitaet + l.kapazitaet;
+		ArrayList<Integer> summekapazitaet = new ArrayList<Integer>();
+		durchlaufenKapazitaet(this, summekapazitaet);
+		for(int i : summekapazitaet){
+			kapazitaet = kapazitaet + i;
 		}
 		return kapazitaet;
 	}
 	/**
+	 * rekursive Hilfsmethode für die Methode durchlaufenKapazitaet().
+	 * 
+	 * @param lager Elternlager, dass die Kapazitäten der zugehörigen Leaflager erhält
+	 * @param liste Arraylist für die Zwischenspeicherung der Kapazitäten.
+	 */
+	private void durchlaufenKapazitaet(Lager lager, ArrayList<Integer> liste){
+		if(lager.getLagerStatus()=="Leaflager"){
+			liste.add(lager.getKapazitaet());
+		}
+		for(Lager l : lager.kindlager){
+			durchlaufenKapazitaet(l, liste);
+		}
+	}
+	/**
 	 * Methode, die die Bestände in den Kindlagern addiert. Diese Methode wird genutzt, um den Bestand der Elternlager zu berechnen, da diese die
-	 * Bestände der Kindlager erhalten. Wird hauptsächlich in der Methode @see {@link Model#legeInitialeStrukturFest()} genutzt.
-	 * !Wichtig! Diese Methode geht nur durch eine Ebene und nicht alle Ebenen der Kindlager eines Elternlagers. Die Bestände der Kindlager, von Kindlagern werden 
-	 * nicht berücksichtigt und müssen vorher berechnet werden.
+	 * Bestände der Kindlager erhalten.
+
 	 * @return den Gesamtbestand der Kindlager als int.
 	 */
 	public int durchlaufenBestand(){
 		int bestand = 0;
-		for(Lager l : this.kindlager){
-			bestand = bestand + l.bestand;
+		ArrayList<Integer> summebestand = new ArrayList<Integer>();
+		durchlaufenBestand(this, summebestand);
+		for(int i : summebestand){
+			bestand = bestand + i;
 		}
 		return bestand;
+	}	
+	/**
+	 * rekursive Hilfsmethode für die Methode durchlaufenBestand().
+	 * 
+	 * @param lager Elternlager, dass die Bestände der zugehörigen Leaflager erhält.
+	 * @param liste Arraylist für die Zwischenspeicherung der Bestände.
+	 */
+	private void durchlaufenBestand(Lager lager, ArrayList<Integer> liste){
+		if(lager.getLagerStatus()=="Leaflager"){
+			liste.add(lager.getBestand());
+		}
+		for(Lager l : lager.kindlager){
+			durchlaufenBestand(l, liste);
+		}	
 	}
-	public void durchlaufen(Lager lager, ArrayList<Lager> liste){
+	public void durchlaufenKindlager(Lager lager, ArrayList<Lager> liste){
 		liste.add(lager);
 		for(Lager l : lager.kindlager){
-			durchlaufen(l, liste);
+			durchlaufenKindlager(l, liste);
 		}
 
+	}
+	public void durchlaufenElternlager(Lager lager, ArrayList<Lager> liste){
+		Lager elternlager = lager.getElternlager();
+		if(elternlager!=null){
+			liste.add(elternlager);
+			durchlaufenElternlager(elternlager, liste);
+		}
 	}
 	
 //	public ArrayList methode(int arg) {

@@ -3,7 +3,7 @@ package controller;
 
 import java.util.ArrayList;
 
-
+import model.Buchung;
 import model.Lager;
 import model.Model;
 
@@ -15,6 +15,19 @@ public class Controller {
 		//hier wird die Lagerstruktur generiert
 		m.legeInitialeStrukturFest();
 		
+		
+		//Das wird alles für eine Buchung benötigt:
+		ArrayList<Lager> buchungslagerliste = new ArrayList<Lager>();
+		buchungslagerliste.add(m.getLagerliste().get(6));
+		buchungslagerliste.add(m.getLagerliste().get(7));
+		buchungslagerliste.add(m.getLagerliste().get(8));
+		Buchung b = m.neueBuchung(20000, buchungslagerliste);
+		b.setBuchungstyp(1);
+		//m.sysoBuchungsliste(m.getBuchungliste());
+		
+		Double[] schluessel = new Double[]{0.25,0.2,0.55};
+		m.fuehreBuchungenaus(schluessel);
+
 		//hier ist die gesamte Lagerliste für die View
 		m.getLagerliste();
 
@@ -27,10 +40,7 @@ public class Controller {
 
 	
 	//Halils Sammelkiste:
-	//ArrayList<Lager> buchungslagerliste = new ArrayList<Lager>();
-	//buchungslagerliste.add(m.getLagerliste().get(0));
-	//buchungslagerliste.add(m.getLagerliste().get(1));
-	//m.neueBuchung(400, buchungslagerliste);
+	
 	//Lager neuesLager = m.lagerAnlegen("neues Lager", 0, 0);
 
 	//Test für Fall 1: Das neue Lager wird über Deutschland angelegt
@@ -51,9 +61,6 @@ public class Controller {
 	//Test für Fall 3: Das Lager MV wird gelöscht
 	//m.lagerLoeschen(m.getLagerliste().get(8));
 
-	//Double[] schluessel = new Double[]{0.5,0.5};
-	//m.fuehreBuchungenaus(schluessel);
-	//m.sysoBuchungsliste(m.getBuchungliste());
 	//System.out.print(m.addiereRestLagerBestand(m.getLagerliste()));
 	
 

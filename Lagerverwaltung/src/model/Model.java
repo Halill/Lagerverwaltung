@@ -169,23 +169,20 @@ public class Model{
 		
 	}
 	
-	/**
-	 * Legt die initiale Lagerstruktur an. Hier werden alle Werte aller Lager und deren Beziehungen zueinander festgelegt.
-	 * 
-	 */
-	
-	
+
 	private ArrayList<Lager> sortiereLagerliste(ArrayList<Lager> lagerliste){
 		ArrayList<Lager> lagerl = new ArrayList<Lager>();
 		for(Lager lager : lagerliste){
 			if(lager.getLagerStatus()=="Rootlager"){
-				lager.durchlaufen(lager, lagerl);
+				lager.durchlaufenKindlager(lager, lagerl);
 			}
 		}
 		return lagerl;
 	}
-	
-	
+	/**
+	 * Legt die initiale Lagerstruktur an. Hier werden alle Werte aller Lager und deren Beziehungen zueinander festgelegt.
+	 * 
+	 */
 	public void legeInitialeStrukturFest(){	
 		Lager hannover = lagerAnlegen("Hannover-Misburg", 1000, 500);
 		Lager nienburg = lagerAnlegen("Nienburg", 500, 300);
@@ -195,7 +192,7 @@ public class Model{
 		niedersachsen.setKindlager(hannover);
 		niedersachsen.setKapazitaet(niedersachsen.durchlaufenKapazitaet());
 		niedersachsen.setBestand(niedersachsen.durchlaufenBestand());
-		Lager nrw = lagerAnlegen("NRW", 15000, 5000);
+		Lager nrw = lagerAnlegen("NRW", 25000, 5000);
 		Lager bremen = lagerAnlegen("Bremen", 2000, 0);
 		Lager hessen = lagerAnlegen("Hessen", 12500, 5000);
 		Lager sachsen = lagerAnlegen("Sachsen", 5000, 1000);
@@ -211,7 +208,7 @@ public class Model{
 		deutschland.setKindlager(brandenburg);
 		deutschland.setKindlager(mv);
 		deutschland.setKapazitaet(deutschland.durchlaufenKapazitaet());
-		deutschland.setBestand(deutschland.durchlaufenBestand());
+		deutschland.setBestand(deutschland.durchlaufenBestand()); //14300
 		
 		Lager paris = lagerAnlegen("Paris-Nord", 5000, 4500);
 		Lager orleans = lagerAnlegen("Orleans", 5000, 4500);
@@ -224,7 +221,7 @@ public class Model{
 		frankreich.setKindlager(marseille);
 		frankreich.setKindlager(nimes);
 		frankreich.setKapazitaet(frankreich.durchlaufenKapazitaet());
-		frankreich.setBestand(frankreich.durchlaufenBestand());
+		frankreich.setBestand(frankreich.durchlaufenBestand()); // 18000
 		
 		Lager mailand = lagerAnlegen("Mailand", 5000, 4500);
 		Lager laquila = lagerAnlegen("L'Aquila", 5000, 4500);
@@ -232,7 +229,7 @@ public class Model{
 		italien = lagerAnlegen("Italien", 0, 0);
 		italien.setKindlager(mailand);
 		italien.setKindlager(laquila);
-		italien.setBestand(italien.durchlaufenBestand());
+		italien.setBestand(italien.durchlaufenBestand()); // 9000
 		italien.setKapazitaet(italien.durchlaufenKapazitaet());
 		
 		Lager spanien = lagerAnlegen("Spanien", 5000, 4500);
@@ -243,10 +240,9 @@ public class Model{
 		europa.setKindlager(italien);
 		europa.setKindlager(spanien);
 		europa.setKapazitaet(europa.durchlaufenKapazitaet());
-		europa.setBestand(europa.durchlaufenBestand());
+		europa.setBestand(europa.durchlaufenBestand()); // 31500
 		
 		lagerAnlegen("Groﬂbritannien", 5000, 4500);
-		
 	
 		for(Lager l : lagerliste){
 			l.setLagerStatus();
@@ -258,13 +254,13 @@ public class Model{
 		if(addiereRestLagerBestand(lagerliste)<=menge) return false;
 		else return true;
 	}
-	public void neueBuchung(int menge, ArrayList<Lager> lagerliste){
+	public Buchung neueBuchung(int menge, ArrayList<Lager> lagerliste){
 		Buchung buchung = new Buchung();
 		buchung.setBuchungLagerListe(lagerliste);
 		buchung.setDatum();
 		if(pruefeBuchungsmenge(menge)) buchung.setMenge(menge);
-
 		buchungliste.add(buchung);
+		return buchung;
 	}
 	public ArrayList<Buchung> getBuchungliste() {
 		return buchungliste;
@@ -274,14 +270,18 @@ public class Model{
 	}
 	public void sysoBuchungsliste(ArrayList<Buchung> buchungliste){
 		for(Buchung b : buchungliste){
+			System.out.println(b.getBuchungstyp());
 			System.out.println(b.getMenge());
 			System.out.println(b.getDatum());
 		}
 	}
 	public void fuehreBuchungenaus(Double[] schluessel){
 		for(Buchung b : buchungliste){
-			if(pruefeBuchungsmenge(b.getMenge())){
-				b.buchen(schluessel);
+			if(pruefeBuchungsmenge(b.getMenge()) && b.getBuchungstyp()=="Zubuchung"){
+				b.zubuchen(schluessel);
+			}
+			if(pruefeBuchungsmenge(b.getMenge()) && b.getBuchungstyp()=="Abbuchung"){
+				b.abbuchen(schluessel);
 			}
 		}
 	}
