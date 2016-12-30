@@ -159,6 +159,9 @@ public class Buchen {
 
 	private String[] getLager() 
 	{
-		return null;
+		String[] lagerStructure =  {"element1","element2","element3"};
+		
+		
+		return lagerStructure;
 	}
 }
