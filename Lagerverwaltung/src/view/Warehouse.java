@@ -103,6 +103,7 @@ public class Warehouse {
 		
 		//m.sysoLagerstruktur(lagerl);
 		
+		
 	//	Lager neuesLager = m.lagerAnlegen("neues Lager", 0, 0);
 
 //		Test für Fall 1: Das neue Lager wird über Deutschland angelegt

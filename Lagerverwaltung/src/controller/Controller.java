@@ -1,44 +1,19 @@
 package controller;
 
 
-import java.util.ArrayList;
-
-import model.Buchung;
-import model.Lager;
-import model.Model;
+//import java.util.ArrayList;
+//
+//import model.Buchung;
+//import model.Lager;
+//import model.Model;
 
 public class Controller {
 
 	public static void main(String[] arg0){
-		Model m = new Model();
-
-		//hier wird die Lagerstruktur generiert
-		m.legeInitialeStrukturFest();
-		
-		
-		//Das wird alles für eine Buchung benötigt:
-		ArrayList<Lager> buchungslagerliste = new ArrayList<Lager>();
-		buchungslagerliste.add(m.getLagerliste().get(6));
-		buchungslagerliste.add(m.getLagerliste().get(7));
-		buchungslagerliste.add(m.getLagerliste().get(8));
-		Buchung b = m.neueBuchung(20000, buchungslagerliste);
-		b.setBuchungstyp(1);
-		//m.sysoBuchungsliste(m.getBuchungliste());
-		
-		Double[] schluessel = new Double[]{0.25,0.2,0.55};
-		m.fuehreBuchungenaus(schluessel);
-
-		//hier ist die gesamte Lagerliste für die View
-		m.getLagerliste();
-
-		//Methode für mich zum überprüfen, ob die richtige Lagerstruktur erscheint.
-		m.sysoLagerstruktur(m.getLagerliste());
-
-
-
+		//Model m = new Model();
 	}
 
-	
+}	
 	//Halils Sammelkiste:
 	
 	//Lager neuesLager = m.lagerAnlegen("neues Lager", 0, 0);
@@ -62,6 +37,40 @@ public class Controller {
 	//m.lagerLoeschen(m.getLagerliste().get(8));
 
 	//System.out.print(m.addiereRestLagerBestand(m.getLagerliste()));
+
+	//hier wird die Lagerstruktur generiert
+	//m.legeInitialeStrukturFest();
+	
+	
+	//Das wird alles für eine Buchung benötigt:
+	//Buchung b = m.neueBuchung(500);
+	//b.fuegeLagerzuBuchungHinzu(m.getLagerliste().get(6));
+	//b.fuegeLagerzuBuchungHinzu(m.getLagerliste().get(7));
+	//b.fuegeLagerzuBuchungHinzu(m.getLagerliste().get(8));
+	//b.setBuchungstyp(Buchung.ZUBUCHUNG);
+	//Gesamtbuchungsliste des Models, in der alle Buchungen enthalten sind:
+	//m.sysoBuchungsliste(m.getBuchungliste());
+	//Liste von Lagern die zur Buchung b gehören:
+	//m.sysoLagerstruktur(b.getBuchungLagerListe());
+	
+	
+	//Festlegen eines Schlüssels für Verteilung:
+	//Double[] schluessel = new Double[]{0.25,0.2,0.55};
+	//b.setVerteilungsschluessel(schluessel);
+	//Fuehrt die Buchung schlussendlich aus:
+	//m.fuehreBuchungenaus();
+
+	
+	//ArrayList<Buchung> buchungsliste = m.getLagerliste().get(6).getBuchungsliste();
+	//Buchungsliste des Lagers Hessen:
+	//m.sysoBuchungsliste(buchungsliste);
+
 	
 
-}
+	//hier ist die gesamte Lagerliste für die View
+	//m.getLagerliste();
+
+	//Methode für mich zum überprüfen, ob die richtige Lagerstruktur erscheint.
+	//m.sysoLagerstruktur(m.getLagerliste());
+	
+

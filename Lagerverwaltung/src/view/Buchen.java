@@ -217,7 +217,7 @@ public class Buchen extends Warehouse{
 				buchen.setDatum();				
 				buchen.setBuchungLagerListe(getLager());
 				buchen.setMenge(Integer.parseInt(textField.getText()));
-				buchen.zubuchen(key);
+				buchen.zubuchen();
 				refresh();
 			}
 		});

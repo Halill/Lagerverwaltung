@@ -6,10 +6,8 @@ package model;
  * @author Halil
  */
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 
-public class Lager extends Observable implements Observer{
+public class Lager{
 	
 	/** Attribut Name*/
 	private String name;
@@ -22,6 +20,8 @@ public class Lager extends Observable implements Observer{
 	/** Attribut Kindlager. Eine Liste, die die Lager unter diesem Lager enthält.*/
 	private ArrayList<Lager> kindlager = new ArrayList<Lager>();
 	/**Attribut Lagerstatus.*/
+	
+	private ArrayList<Buchung> buchungsliste = new ArrayList<Buchung>();
 
 	private static int ROOTLAGER = 0, TREELAGER = 1, LEAFLAGER = 2; 
 	
@@ -168,7 +168,6 @@ public class Lager extends Observable implements Observer{
 	public void setKindlager(Lager kindlager) {
 		this.kindlager.add(kindlager);
 		kindlager.elternlager = this;
-		if(kindlager.elternlager!=null) kindlager.addObserver(kindlager.elternlager);//Veränderung, Erklärung in Dokumentation 
 	}
 	/**
 	 *
@@ -253,24 +252,10 @@ public class Lager extends Observable implements Observer{
 			durchlaufenElternlager(elternlager, liste);
 		}
 	}
-	
-//	public ArrayList methode(int arg) {
-//		return methode(arg, new ArrayList());
-//	}
-//	public void methode(int arg, ArrayList list) {
-//	  if (arg > 0) {
-//	    list.add(arg);
-//	    methode(arg-1);
-//	   // oder erst rekursiver Aufruf, und dann eintragen
-//	  }
-//	  return list;
-//	}
-	@Override
-	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
-		
+	public ArrayList<Buchung> getBuchungsliste() {
+		return buchungsliste;
 	}
-	
-}	
-
-//	
+	public void addBuchung(Buchung buchung) {
+		this.buchungsliste.add(buchung);
+	}
+}		

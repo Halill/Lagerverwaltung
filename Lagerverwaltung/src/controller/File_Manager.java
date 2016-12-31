@@ -96,6 +96,7 @@ public class File_Manager
 		
 		ArrayList<Lager> lager = new ArrayList<Lager>();
 		
+		
 	    FileReader fr;
 		try {
 			fr = new FileReader(path);

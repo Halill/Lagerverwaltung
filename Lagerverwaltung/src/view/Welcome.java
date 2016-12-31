@@ -79,6 +79,7 @@ public class Welcome {
 				frame.dispose();
 			}
 		});
+		
 		new_inventory.setBounds(45, 168, 126, 56);
 		panel.add(new_inventory);
 		
