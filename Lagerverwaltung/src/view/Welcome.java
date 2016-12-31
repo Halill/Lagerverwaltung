@@ -14,6 +14,10 @@ import java.awt.GridBagConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
+
+import controller.File_Manager;
+import model.Lager;
+
 import com.jgoodies.forms.layout.FormSpecs;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -24,6 +28,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 
 public class Welcome {
@@ -70,13 +75,26 @@ public class Welcome {
 		new_inventory.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {				
 				Warehouse window = new Warehouse();
-				window.frame.setVisible(true);				
+				window.frame.setVisible(true);		
+				frame.dispose();
 			}
 		});
 		new_inventory.setBounds(45, 168, 126, 56);
 		panel.add(new_inventory);
 		
 		JButton load_inventory = new JButton("Lager \u00D6ffnen");
+		load_inventory.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				File_Manager file = new File_Manager();
+				ArrayList<Lager> lager = file.load_inventory();
+				Warehouse window = new Warehouse();
+				window.frame.setVisible(true);
+				window.getModel().setLagerliste(lager);
+				window.setLager(lager);
+				window.refresh();
+				frame.dispose();
+			}
+		});
 		load_inventory.setBounds(201, 168, 126, 56);
 		panel.add(load_inventory);
 		

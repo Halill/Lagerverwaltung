@@ -27,12 +27,15 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import controller.File_Manager;
 import model.Lager;
 import model.Model;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.sql.Savepoint;
+
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 
@@ -43,6 +46,8 @@ public class Warehouse {
 	private JPanel navigationBar;
 	private JScrollPane scrollPane;
 	private JButton[] naviButtons;
+	private Model m;
+	private ArrayList<Lager> lagerl;
 
 	/**
 	 * @author Markus
@@ -69,12 +74,30 @@ public class Warehouse {
 		initialize();
 		load_Inventory();
 	}
-
+	
+	public void setModel(Model model)
+	{
+		m = model;
+	}
+	public Model getModel()
+	{
+		return m;
+	}
+	
+	public void setLager(ArrayList<Lager> lager)
+	{
+		lagerl = lager;
+	}
+	public ArrayList<Lager> getLager()
+	{
+		return lagerl;
+	}
+	
 	private void load_Inventory() 
 	{		
-		Model m = new Model();
-
-		ArrayList<Lager> lagerl = new ArrayList<Lager>();
+		setModel(new Model());		
+		setLager(new ArrayList<Lager>());
+		
 		m.legeInitialeStrukturFest();
 		lagerl = m.getLagerliste();
 		
@@ -95,8 +118,64 @@ public class Warehouse {
 		
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Gesamtlager");
 		DefaultMutableTreeNode[] nodes = new DefaultMutableTreeNode[lagerl.size()];
-		DefaultMutableTreeNode node;
 		
+		generateTree(root, nodes);
+		   
+		DefaultTreeModel model = new DefaultTreeModel(root);
+		inventory.setModel(model);	
+		
+		int count =  inventory.getModel().getChildCount(root);
+		naviButtons = new JButton[count];
+		
+		
+		//Lädt die Ober-Lager in die Navigations Liste
+		for(int i=0;i < root.getChildCount();i++)
+		{
+			System.out.println(inventory.getModel().getChild(root, i));
+			createIButton(i,root);
+		}
+		
+		//Lädt die Buchen und Abbuchen Buttons
+		JButton buchen = new JButton("Buchen/Abbuchen");
+		buchen.setLocation(0,count * 30 + 30);
+		buchen.setSize(navigationBar.getSize().width,30);
+		buchen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Buchen window = new Buchen();
+				window.frame.setVisible(true);			
+			}
+		});
+		scrollPane.add(buchen);
+		
+		JButton speichern = new JButton("Speichern");
+		speichern.setLocation(0,(count + 1) * 30 + 30);
+		speichern.setSize(navigationBar.getSize().width,30);
+		speichern.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			File_Manager file = new File_Manager();
+			file.save_inventory(getLager());
+			}
+		});
+		scrollPane.add(speichern);		
+	}
+	
+	public void refresh()
+	{		
+		inventory = new JTree();
+		m.sysoLagerstruktur(lagerl);
+		
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Gesamtlager2");
+		DefaultMutableTreeNode[] nodes = new DefaultMutableTreeNode[lagerl.size()];
+		
+		DefaultTreeModel model = new DefaultTreeModel(root);
+		inventory.setModel(model);	
+		
+		generateTree(root, nodes);
+	}
+
+	public void generateTree(DefaultMutableTreeNode root, DefaultMutableTreeNode[] nodes) {
+		DefaultMutableTreeNode node;
 		for(int i = 0; i < lagerl.size();i++)
 		{
 			nodes[i] = new DefaultMutableTreeNode(lagerl.get(i).getName());
@@ -142,46 +221,8 @@ public class Warehouse {
 			    ((DefaultTreeModel) inventory.getModel()).nodeChanged(node);
 			}	
 		}
-		
-	    
-		DefaultTreeModel model = new DefaultTreeModel(root);
-		inventory.setModel(model);	
-		
-		int count =  inventory.getModel().getChildCount(root);
-		naviButtons = new JButton[count];
-		
-		
-		//Lädt die Ober-Lager in die Navigations Liste
-		for(int i=0;i < root.getChildCount();i++)
-		{
-			System.out.println(inventory.getModel().getChild(root, i));
-			createIButton(i,root);
-		}
-		
-		//Lädt die Buchen und Abbuchen Buttons
-		JButton buchen = new JButton("Buchen");
-		buchen.setLocation(0,count * 30 + 30);
-		buchen.setSize(navigationBar.getSize().width,30);
-		buchen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				Buchen window = new Buchen();
-				window.frame.setVisible(true);			
-			}
-		});
-		scrollPane.add(buchen);
-		
-		JButton abbuchen = new JButton("Abbuchen");
-		abbuchen.setLocation(0,(count + 1) * 30 + 30);
-		abbuchen.setSize(navigationBar.getSize().width,30);
-		abbuchen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			
-			}
-		});
-		scrollPane.add(abbuchen);
-		
-		
 	}
+	
 	private DefaultMutableTreeNode findNode(DefaultMutableTreeNode root, String s) {
 	    @SuppressWarnings("unchecked")
 	    Enumeration<DefaultMutableTreeNode> e = root.depthFirstEnumeration();

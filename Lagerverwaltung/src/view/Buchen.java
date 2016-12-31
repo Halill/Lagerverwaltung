@@ -3,31 +3,35 @@ package view;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import java.awt.FlowLayout;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import java.awt.Scrollbar;
-import java.awt.ScrollPane;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
-import java.awt.Color;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 
-import java.awt.Label;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
-import javax.swing.DropMode;
 import javax.swing.SwingConstants;
 import javax.swing.ListSelectionModel;
 import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
-public class Buchen {
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import model.Buchung;
+import model.Lager;
+import model.Model;
+
+
+public class Buchen extends Warehouse{
 
 	JFrame frame;
 	private JTextField textField;
@@ -80,6 +84,24 @@ public class Buchen {
 			        }
 			}
 		});
+		textField.getDocument().addDocumentListener(new DocumentListener() {
+
+			@Override
+			public void changedUpdate(DocumentEvent arg0) {	
+				
+			}
+
+			@Override
+			public void insertUpdate(DocumentEvent arg0) {
+				// TODO Auto-generated method stub
+				System.out.println("Zu verteilende Einheiten: " + textField.getText());
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent arg0) {
+
+			}
+		});
 		textField.setBackground(SystemColor.inactiveCaptionBorder);
 		textField.setFont(new Font("Tahoma", Font.PLAIN, 40));
 		textField.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -92,37 +114,85 @@ public class Buchen {
 		lblWhlenSieDie.setBounds(38, 28, 480, 25);
 		panel.add(lblWhlenSieDie);
 		
-		JButton btnNewButton_1 = new JButton("+1");
-		btnNewButton_1.setBounds(347, 69, 64, 23);
-		panel.add(btnNewButton_1);
+		JButton add_one = new JButton("+1");
+		add_one.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int count = Integer.parseInt(textField.getText());
+				textField.setText(++count + "");
+			}
+		});
+		add_one.setBounds(347, 69, 64, 23);
+		panel.add(add_one);
 		
-		JButton button = new JButton("+10");
-		button.setBounds(421, 69, 64, 23);
-		panel.add(button);
+		JButton add_ten = new JButton("+10");
+		add_ten.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int count = Integer.parseInt(textField.getText());
+				textField.setText(10 + count + "");
+			}
+		});
+		add_ten.setBounds(421, 69, 64, 23);
+		panel.add(add_ten);
 		
-		JButton button_1 = new JButton("+100");
-		button_1.setBounds(495, 69, 64, 23);
-		panel.add(button_1);
+		JButton add_hundred = new JButton("+100");
+		add_hundred.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int count = Integer.parseInt(textField.getText());
+				textField.setText(100 + count + "");
+			}
+		});
+		add_hundred.setBounds(495, 69, 64, 23);
+		panel.add(add_hundred);
 		
-		JButton button_2 = new JButton("+1000");
-		button_2.setBounds(569, 69, 72, 23);
-		panel.add(button_2);
+		JButton add_thousand = new JButton("+1000");
+		add_thousand.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int count = Integer.parseInt(textField.getText());
+				textField.setText(1000 + count + "");
+			}
+		});
+		add_thousand.setBounds(569, 69, 72, 23);
+		panel.add(add_thousand);
 		
-		JButton button_3 = new JButton("-1000");
-		button_3.setBounds(569, 103, 72, 23);
-		panel.add(button_3);
+		JButton rem_thousand = new JButton("-1000");
+		rem_thousand.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int count = Integer.parseInt(textField.getText());
+				textField.setText(count - 1000 + "");
+			}
+		});
+		rem_thousand.setBounds(569, 103, 72, 23);
+		panel.add(rem_thousand);
 		
-		JButton button_4 = new JButton("-100");
-		button_4.setBounds(495, 103, 64, 23);
-		panel.add(button_4);
+		JButton rem_hundred = new JButton("-100");
+		rem_hundred.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int count = Integer.parseInt(textField.getText());
+				textField.setText(count - 100 + "");
+			}
+		});
+		rem_hundred.setBounds(495, 103, 64, 23);
+		panel.add(rem_hundred);
 		
-		JButton button_5 = new JButton("-10");
-		button_5.setBounds(421, 103, 64, 23);
-		panel.add(button_5);
+		JButton rem_10 = new JButton("-10");
+		rem_10.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int count = Integer.parseInt(textField.getText());
+				textField.setText(count - 10 + "");
+			}
+		});
+		rem_10.setBounds(421, 103, 64, 23);
+		panel.add(rem_10);
 		
-		JButton button_6 = new JButton("-1");
-		button_6.setBounds(347, 103, 64, 23);
-		panel.add(button_6);
+		JButton rem_one = new JButton("-1");
+		rem_one.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int count = Integer.parseInt(textField.getText());
+				textField.setText(count - 1 + "");			
+			}
+		});
+		rem_one.setBounds(347, 103, 64, 23);
+		panel.add(rem_one);
 		
 		DefaultListModel<String> model = new DefaultListModel<>();
 		
@@ -130,9 +200,29 @@ public class Buchen {
 		  model.addElement( "test" );
 		}
 		
-		JButton btnNewButton = new JButton("Buchen");
-		btnNewButton.setBounds(587, 387, 105, 38);
-		frame.getContentPane().add(btnNewButton);
+		JButton Buchen = new JButton("Buchen");
+
+		Buchen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				Buchung buchen = new Buchung();
+				if(Integer.parseInt(textField.getText()) > 0)
+					buchen.setBuchungstyp(1);
+				else
+					buchen.setBuchungstyp(0);
+				
+				Double d = 1.0 / getLager().size();
+				Double[] key = {d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d};
+				buchen.setVerteilungsschluessel(key);
+				buchen.setDatum();				
+				buchen.setBuchungLagerListe(getLager());
+				buchen.setMenge(Integer.parseInt(textField.getText()));
+				buchen.zubuchen(key);
+				refresh();
+			}
+		});
+		Buchen.setBounds(587, 387, 105, 38);
+		frame.getContentPane().add(Buchen);
 		
 		JButton btnVor = new JButton("Vor");
 		btnVor.setBounds(484, 387, 105, 38);
@@ -150,16 +240,23 @@ public class Buchen {
 		JScrollPane scrollPane = new JScrollPane();
 		panel_1.add(scrollPane);
 		
-		String[] ar = getLager();
+		String[] ar = getLager(getModel().getLagerliste());
 		JList list_1 = new JList(ar);
 		list_1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);	
 
 		scrollPane.setViewportView(list_1);
 	}
 
-	private String[] getLager() 
+	private String[] getLager(ArrayList<Lager> arrayList) 
 	{
-		String[] lagerStructure =  {"element1","element2","element3"};
+		String[] lagerStructure =  new String[arrayList.size()];
+		
+		int i = 0;
+		for(Lager lager : arrayList)
+		{
+			lagerStructure[i] = lager.getName();
+			i++;
+		}
 		
 		
 		return lagerStructure;
