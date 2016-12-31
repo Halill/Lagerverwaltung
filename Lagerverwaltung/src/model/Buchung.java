@@ -101,6 +101,7 @@ public class Buchung {
 	 */
 	public void fuegeLagerzuBuchungHinzu(Lager lager){
 		this.buchunglagerliste.add(lager);
+		lager.addBuchung(this);
 	}
 	/**
 	 * Führt eine Zubuchung aus.
