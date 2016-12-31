@@ -2,6 +2,8 @@ package model;
 
 
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -120,6 +122,8 @@ public class Buchung {
 		for(int i = 0;i<this.verteilungsschluessel.length;i++){
 			schluesselsumme = schluesselsumme + this.verteilungsschluessel[i];
 		}
+		
+		schluesselsumme = round(schluesselsumme);
 		//Prüfung, ob die ganze Buchung verteilt wird
 		if(schluesselsumme == 1.0){
 			//Umwandlung der Buchungslagerliste in einen Array, um die jeweiligen Lager und Schlüssel zu verknüpfen.
@@ -144,12 +148,19 @@ public class Buchung {
 						//für den Fall, dass eine Teilbuchung nicht funktioniert, und die vorherigen Teilbuchung schon gebucht worden sind,
 						//werden diese rückgängig gemacht
 						for(int j = i-1; j>=0;j--){
-							lagerl[j].setBestand(lagerl[j].getBestand()-(int)(this.menge*this.verteilungsschluessel[j]));
+							lagerl[j].setBestand(lagerl[j].getBestand()+(int)(this.menge*this.verteilungsschluessel[j]));
 						}	
 					}
 				}
 			}
 		}
+	}
+	private double round(double schluesselsumme) {
+		  if (schluesselsumme < 0) throw new IllegalArgumentException();
+
+		    BigDecimal bd = new BigDecimal(schluesselsumme);
+		    bd = bd.setScale(2, RoundingMode.HALF_UP);
+		return bd.doubleValue();
 	}
 	/**
 	 * Führt eine Abbuchung aus.
@@ -193,7 +204,7 @@ public class Buchung {
 						//für den Fall, dass eine Teilbuchung nicht funktioniert, und die vorherigen Teilbuchung schon gebucht worden sind,
 						//werden diese rückgängig gemacht
 						for(int j = i-1; j>=0;j--){
-							lagerl[j].setBestand(lagerl[j].getBestand()+(int)(this.menge*this.verteilungsschluessel[j]));
+							lagerl[j].setBestand(lagerl[j].getBestand()-(int)(this.menge*this.verteilungsschluessel[j]));
 						}
 					}	
 				}
