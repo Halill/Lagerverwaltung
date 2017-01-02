@@ -2,15 +2,19 @@ package controller;
 
 
 //import java.util.ArrayList;
-//
-//import model.Buchung;
+
+import model.Buchung;
 //import model.Lager;
-//import model.Model;
+import model.Model;
 
 public class Controller {
 
 	public static void main(String[] arg0){
-		//Model m = new Model();
+		Model m = new Model();
+		
+		//hier wird die Lagerstruktur generiert
+		m.legeInitialeStrukturFest();
+		
 	}
 
 }	
