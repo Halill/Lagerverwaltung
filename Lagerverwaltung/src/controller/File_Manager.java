@@ -21,7 +21,7 @@ import model.Model;
 public class File_Manager
 {
 	
-	public void save_inventory(ArrayList<Lager> lager)
+	public void save_inventory(ArrayList<Lager> lagerliste)
 	{
 		Date date = new Date();
 		DateFormat df;
@@ -33,16 +33,15 @@ public class File_Manager
 		
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter("Resources\\save-" + date.toString().replace(":", "-") + ".txt"));
-			for (int i = 0; i < lager.size(); i++) {
-				System.out.println(lager.get(i).getName() + "|" + lager.get(i).getKapazitaet() + 
-						"|" + lager.get(i).getBestand() + "|" + lager.get(i).getLagerStatus() + "|" +
-						getEltern(lager.get(i).getElternlager()) + "|" + getKinder(lager.get(i).getKindlager()));
+			for (int i = 0; i < lagerliste.size(); i++) {
+				System.out.println(lagerliste.get(i).getName() + "/" + lagerliste.get(i).getKapazitaet() + 
+						"/" + lagerliste.get(i).getBestand() + "/" + lagerliste.get(i).getLagerStatus() + "/" +
+						getEltern(lagerliste.get(i).getElternlager()) + "/" + getKinder(lagerliste.get(i).getKindlager()));
 		
-				    String content = lager.get(i).getName() + "|" + lager.get(i).getKapazitaet() + 
-							"|" + lager.get(i).getBestand() + "|" + lager.get(i).getLagerStatus() + "|" +
-							getEltern(lager.get(i).getElternlager()) + "|" + getKinder(lager.get(i).getKindlager()) +"\n";
+				    String content = lagerliste.get(i).getName() + "/" + lagerliste.get(i).getKapazitaet() + 
+							"/" + lagerliste.get(i).getBestand() + "/" + lagerliste.get(i).getLagerStatus() + "/" +
+							getEltern(lagerliste.get(i).getElternlager()) + "/" + getKinder(lagerliste.get(i).getKindlager()) +"\n";
 			
-
 					bw.write(content);
 			}
 			bw.close();
@@ -63,16 +62,16 @@ public class File_Manager
 		
 		String eltern = ""; 
 		if (lager != null) 
-		{
 			eltern = lager.getName();
-		}
+		else
+			eltern = "kein Elternlager vorhanden";
 		return eltern;
 	}
 	
 	private String getKinder(ArrayList<Lager> kindlager) {
 		
-		String kinder = "keine Kindlager vorhanden"; 
-		if (kindlager != null) 
+		String kinder = ""; 
+		if (kindlager.isEmpty() == false) 
 		{
 			for (int i = 0; i < kindlager.size(); i++) {
 				if (kinder == "")
@@ -80,6 +79,9 @@ public class File_Manager
 				else
 					kinder = kinder + "," + kindlager.get(i).getName();
 			} 
+		}
+		else{
+			kinder = "keine Kindlager vorhanden";
 		}
 		return kinder;
 	}
@@ -94,32 +96,48 @@ public class File_Manager
         chooser.showDialog(null, "Öffnen");
 		String path = chooser.getSelectedFile().getAbsolutePath();
 		
-		ArrayList<Lager> lager = new ArrayList<Lager>();
+		ArrayList<Lager> lagerliste = new ArrayList<Lager>();
 		
 		
 	    FileReader fr;
 		try {
 			fr = new FileReader(path);
 		    BufferedReader br = new BufferedReader(fr);
-		    String zeile = "";
-		    Lager l;
+		    String text = "";
+		    Lager lager = new Lager();
 		    Model m = new Model();
-		    
-		    while( (zeile = br.readLine()) != null ) {
-		    	
-		    	
-		    	l = m.lagerAnlegen(zeile.split("|")[0], Integer.parseInt(zeile.split("|")[1]), Integer.parseInt(zeile.split("|")[2]));
-		    	l = new Lager();
-		    	
-//		    	l.setName(zeile.split("|")[0]);
-//		    	l.setKapazitaet(zeile.split("|")[1]);
-//		    	l.setBestand(zeile.split("|")[2]);   		    	
-//		    	l.setElternlager(zeile.split("|")[3]);
-		    	
-		    	
-		    	lager.add(l);	
-		    	System.out.println(zeile);
+	    	String elternlager = "";
+	    	String kindlager = "";
+	    	int i = 0;
+		
+
+	    	while((text = br.readLine()) != null ) {
+
+		    	String[] nkbek= text.split("/");
+		    	String name = nkbek[0];
+		    	int kapazitaet = Integer.parseInt(nkbek[1]);
+		    	int bestand = Integer.parseInt(nkbek[2]);
+		    	elternlager = nkbek[4];
+		    	kindlager = nkbek[5];
+		    	lager = m.lagerAnlegen(name, kapazitaet, bestand);
+	
+		    	lagerliste.add(lager);	
+
+
+		    	i++;
 			}
+		    for(Lager l : lagerliste){
+		    	String[] kinder = kindlager.split(",");
+		    	for(Lager ll : lagerliste){
+		    		for(int j = 0; j<kinder.length;i++){
+		    			if(kinder[j]==ll.getName()){
+		    				l.setKindlager(ll);
+		    			}
+		    		}
+		    	}
+		    	l.setLagerStatus();
+		    }
+
 
 		    br.close();
 		    
@@ -131,9 +149,10 @@ public class File_Manager
 			e.printStackTrace();
 		}
 
+
 	    
 		
-		return null;
+		return lagerliste;
 	}
 
 }

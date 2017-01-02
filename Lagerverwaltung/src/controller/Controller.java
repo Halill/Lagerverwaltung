@@ -1,16 +1,20 @@
 package controller;
 
 
-//import java.util.ArrayList;
-//
-//import model.Buchung;
-//import model.Lager;
-//import model.Model;
+import java.util.ArrayList;
+
+import model.Buchung;
+import model.Lager;
+import model.Model;
 
 public class Controller {
 
 	public static void main(String[] arg0){
-		//Model m = new Model();
+		Model m = new Model();
+		File_Manager filemanager = new File_Manager();
+		ArrayList<Lager> lagerliste = filemanager.load_inventory();
+		m.setLagerliste(lagerliste);
+		m.sysoLagerstruktur(lagerliste);
 	}
 
 }	
