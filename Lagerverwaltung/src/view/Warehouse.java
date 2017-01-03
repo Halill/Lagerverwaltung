@@ -38,13 +38,22 @@ import java.sql.Savepoint;
 
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import net.miginfocom.swing.MigLayout;
+import java.awt.CardLayout;
+import java.awt.GridBagLayout;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
 
 public class Warehouse {
 
 	JFrame frame;
 	private JTree inventory;
 	private JPanel navigationBar;
-	private JScrollPane scrollPane;
 	private JButton[] naviButtons;
 	private Model m;
 	private ArrayList<Lager> lagerl;
@@ -82,6 +91,15 @@ public class Warehouse {
 	public Model getModel()
 	{
 		return m;
+	}
+	
+	public void setTree(JTree tree)
+	{
+		inventory = tree;
+	}
+	public JTree getTree()
+	{
+		return inventory;
 	}
 	
 	public void setLager(ArrayList<Lager> lager)
@@ -136,29 +154,17 @@ public class Warehouse {
 			createIButton(i,root);
 		}
 		
-		//Lädt die Buchen und Abbuchen Buttons
-		JButton buchen = new JButton("Buchen/Abbuchen");
-		buchen.setLocation(0,count * 30 + 30);
-		buchen.setSize(navigationBar.getSize().width,30);
-		buchen.addActionListener(new ActionListener() {
+		JButton booking = new JButton("Buchen/Abbuchen");
+		booking.setSize(197,30);
+		booking.setLocation(0,(root.getChildCount() + 1) * 30);
+		booking.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Buchen window = new Buchen();
-				window.frame.setVisible(true);			
+				window.frame.setVisible(true);
+
 			}
 		});
-		scrollPane.add(buchen);
-		
-		JButton speichern = new JButton("Speichern");
-		speichern.setLocation(0,(count + 1) * 30 + 30);
-		speichern.setSize(navigationBar.getSize().width,30);
-		speichern.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-			File_Manager file = new File_Manager();
-			file.save_inventory(getLager());
-			}
-		});
-		scrollPane.add(speichern);		
+		navigationBar.add(booking);
 	}
 	
 	public void refresh()
@@ -168,11 +174,13 @@ public class Warehouse {
 		
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Gesamtlager2");
 		DefaultMutableTreeNode[] nodes = new DefaultMutableTreeNode[lagerl.size()];
+		generateTree(root, nodes);
 		
 		DefaultTreeModel model = new DefaultTreeModel(root);
+	
 		inventory.setModel(model);	
 		
-		generateTree(root, nodes);
+
 	}
 
 	public void generateTree(DefaultMutableTreeNode root, DefaultMutableTreeNode[] nodes) {
@@ -249,7 +257,7 @@ public class Warehouse {
 		String name = root.getChildAt(i).toString().split("\\(")[0];
 		
 		naviButtons[i] = new JButton(name);
-		naviButtons[i].setSize(navigationBar.getSize().width,30);
+		naviButtons[i].setSize(197,30);
 		naviButtons[i].setLocation(0,i * 30);	
 		
 		naviButtons[i].addActionListener(new ActionListener() {
@@ -259,7 +267,7 @@ public class Warehouse {
 
 			}
 		});
-		scrollPane.add(naviButtons[i]);
+		navigationBar.add(naviButtons[i]);
 		
 	}
 
@@ -273,13 +281,17 @@ public class Warehouse {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		navigationBar = new JPanel();
-		navigationBar.setBounds(0, 0, 195, 455);
-		frame.getContentPane().add(navigationBar);
-		navigationBar.setLayout(new BorderLayout(0, 0));
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(0, 0, 197, 455);
+		frame.getContentPane().add(scrollPane);
 		
-		scrollPane = new JScrollPane();
-		navigationBar.add(scrollPane, BorderLayout.CENTER);		
+		navigationBar = new JPanel();
+		scrollPane.setViewportView(navigationBar);
+		navigationBar.setLayout(null);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBounds(0, 0, 120, 281);
+		frame.getContentPane().add(panel_1);
 		
 		JPanel panel_Border = new JPanel();
 		panel_Border.setBackground(SystemColor.inactiveCaptionBorder);
@@ -288,15 +300,18 @@ public class Warehouse {
 		frame.getContentPane().add(panel_Border);
 		panel_Border.setLayout(null);		
 		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(196, 0, 647, 455);
+		frame.getContentPane().add(scrollPane_1);
+		
 		inventory = new JTree();
+		scrollPane_1.setViewportView(inventory);
 		inventory.addTreeSelectionListener(new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent evn) {
 				panel_Border.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), evn.getPath().toString().split("\\(")[0], TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
 				System.out.println("");
 			}
 		});
-		inventory.setBounds(205, 0, 638, 455);
-		frame.getContentPane().add(inventory);
 
 
 		
