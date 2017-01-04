@@ -258,8 +258,8 @@ public class Model{
 		europa.setKapazitaet(europa.durchlaufenKapazitaet());
 		europa.setBestand(europa.durchlaufenBestand()); // 31500
 		
-		lagerAnlegen("Groﬂbritannien", 5000, 4500);
-	
+		Lager greatbr = lagerAnlegen("Groﬂbritannien", 5000, 4500);	
+		
 		for(Lager l : lagerliste){
 			l.setLagerStatus();
 		}

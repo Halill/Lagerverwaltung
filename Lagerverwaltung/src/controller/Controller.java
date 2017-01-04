@@ -11,15 +11,22 @@ public class Controller {
 
 	public static void main(String[] arg0){
 		Model m = new Model();
+<<<<<<< HEAD
 		
 		//hier wird die Lagerstruktur generiert
 		m.legeInitialeStrukturFest();
 		File_Manager filemanager = new File_Manager();
 		ArrayList<Lager> lagerliste = filemanager.load_inventory();
+=======
+		File_Manager filemanager = new File_Manager();
+		ArrayList<Lager> lagerliste = filemanager.load_inventory();
+		m.setLagerliste(lagerliste);
+>>>>>>> c9cf72b807e03d5d7b4e119dd3e4fef7a972ac6c
 		m.sysoLagerstruktur(lagerliste);
 	}
 
 }	
+
 	//Halils Sammelkiste:
 	
 	//Lager neuesLager = m.lagerAnlegen("neues Lager", 0, 0);

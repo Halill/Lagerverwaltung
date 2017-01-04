@@ -106,9 +106,11 @@ public class File_Manager
 		    String text = "";
 		    Lager lager = new Lager();
 		    Model m = new Model();
+
 	    	String[] elternlager = new String[20];
 	    	String[] kindlager = new String[20];
 	    	int i = 1;
+
 		
 
 	    	while((text = br.readLine()) != null ) {
@@ -119,6 +121,8 @@ public class File_Manager
 		    	int bestand = Integer.parseInt(nkbek[2]);
 		    	elternlager[i] = nkbek[4];
 		    	kindlager[i] = nkbek[5];
+
+
 		    	lager = m.lagerAnlegen(name, kapazitaet, bestand);
 	
 		    	lagerliste.add(lager);	
@@ -138,6 +142,8 @@ public class File_Manager
 		    	}
 		    	lagerliste.get(e).setLagerStatus();
 		    }
+
+
 
 
 		    
