@@ -1,5 +1,8 @@
 package model;
-
+/**
+ * Die Klasse Buchung im Package Model
+ * @author Halil
+ */
 
 
 import java.math.BigDecimal;
