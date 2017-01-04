@@ -320,6 +320,7 @@ public class Buchen extends Warehouse{
 						{
 							history.get(j).addTransaction(u + " Einheiten wurden transferiert");
 							System.out.println("Gabs schon");
+							break;
 						}
 						else
 						{
@@ -328,6 +329,7 @@ public class Buchen extends Warehouse{
 							h.addTransaction(u + " Einheiten wurden transferiert");
 							System.out.println("Neu");
 							history.add(h);
+							break;
 						}
 					}		
 				}

@@ -12,6 +12,19 @@ public class Controller {
 	public static void main(String[] arg0){
 		Model m = new Model();
 
+
+		
+		//hier wird die Lagerstruktur generiert
+		m.legeInitialeStrukturFest();
+		File_Manager filemanager = new File_Manager();
+		ArrayList<Lager> lagerliste = filemanager.load_inventory();
+
+		File_Manager filemanager1 = new File_Manager();
+		ArrayList<Lager> lagerliste1 = filemanager1.load_inventory();
+		m.setLagerliste(lagerliste1);
+
+		m.sysoLagerstruktur(lagerliste1);
+
 	}
 
 }	
