@@ -106,19 +106,23 @@ public class File_Manager
 		    String text = "";
 		    Lager lager = new Lager();
 		    Model m = new Model();
-	    	String elternlager = "";
-	    	String kindlager = "";
-	    	int i = 0;
+
+	    	String[] elternlager = new String[20];
+	    	String[] kindlager = new String[20];
+	    	int i = 1;
+
 		
 
 	    	while((text = br.readLine()) != null ) {
 
-		    	String[] nkbek= text.split("/");
+		    	String nkbek[]= text.split("/");
 		    	String name = nkbek[0];
 		    	int kapazitaet = Integer.parseInt(nkbek[1]);
 		    	int bestand = Integer.parseInt(nkbek[2]);
-		    	elternlager = nkbek[4];
-		    	kindlager = nkbek[5];
+		    	elternlager[i] = nkbek[4];
+		    	kindlager[i] = nkbek[5];
+
+
 		    	lager = m.lagerAnlegen(name, kapazitaet, bestand);
 	
 		    	lagerliste.add(lager);	
@@ -126,20 +130,23 @@ public class File_Manager
 
 		    	i++;
 			}
-		    for(Lager l : lagerliste){
-		    	String[] kinder = kindlager.split(",");
-		    	for(Lager ll : lagerliste){
-		    		for(int j = 0; j<kinder.length;i++){
-		    			if(kinder[j]==ll.getName()){
-		    				l.setKindlager(ll);
+	    	br.close();
+		    for(int e = 0;e<lagerliste.size();e++){
+		    	String[] kinder = kindlager[e].split(",");
+		    	for(int k = 0;k<lagerliste.size();k++){
+		    		for(int j = 0; j<kinder.length;j++){
+		    			if(kinder[j]==lagerliste.get(k).getName()){
+		    				lagerliste.get(e).setKindlager(lagerliste.get(k));
 		    			}
 		    		}
 		    	}
-		    	l.setLagerStatus();
+		    	lagerliste.get(e).setLagerStatus();
 		    }
 
 
-		    br.close();
+
+
+		    
 		    
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
