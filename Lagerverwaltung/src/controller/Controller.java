@@ -1,10 +1,10 @@
 package controller;
 
 
-//import java.util.ArrayList;
+import java.util.ArrayList;
 
 import model.Buchung;
-//import model.Lager;
+import model.Lager;
 import model.Model;
 
 public class Controller {
@@ -14,7 +14,9 @@ public class Controller {
 		
 		//hier wird die Lagerstruktur generiert
 		m.legeInitialeStrukturFest();
-		
+		File_Manager filemanager = new File_Manager();
+		ArrayList<Lager> lagerliste = filemanager.load_inventory();
+		m.sysoLagerstruktur(lagerliste);
 	}
 
 }	
