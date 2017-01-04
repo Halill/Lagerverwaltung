@@ -4,7 +4,7 @@ import model.Lager;
 
 public class Book implements CommandManager {
 			
-		Lager l;
+		private Lager l;
 		private int menge;		
 		
 	    public void undo() 
@@ -28,6 +28,11 @@ public class Book implements CommandManager {
 	    	l = lager;
 	    	lager.setBestand(lager.getBestand() + menge);
 	    	System.out.println(menge + " wurde verteilt");
+	    }
+	    
+	    public Lager getLager()
+	    {
+	    	return l;
 	    }
 	    
 		public int getMenge() {

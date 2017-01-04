@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 
 import javax.swing.JTree;
+import javax.swing.ListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
@@ -28,6 +29,7 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import controller.File_Manager;
+import model.InstanceH;
 import model.Lager;
 import model.Model;
 
@@ -40,6 +42,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+
+import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import net.miginfocom.swing.MigLayout;
@@ -48,6 +52,8 @@ import java.awt.GridBagLayout;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
+import javax.swing.JTextPane;
+import javax.swing.AbstractListModel;
 
 public class Warehouse {
 
@@ -57,6 +63,7 @@ public class Warehouse {
 	private JButton[] naviButtons;
 	private Model m;
 	private ArrayList<Lager> lagerl;
+
 
 	/**
 	 * @author Markus
@@ -299,6 +306,21 @@ public class Warehouse {
 		panel_Border.setBounds(0, 454, 843, 226);
 		frame.getContentPane().add(panel_Border);
 		panel_Border.setLayout(null);		
+			
+		JPanel panel = new JPanel();
+		panel.setBounds(6, 16, 833, 199);
+		panel_Border.add(panel);
+		panel.setBackground(SystemColor.inactiveCaptionBorder);
+		panel.setLayout(new BorderLayout(0, 0));
+		
+		
+		JScrollPane scrollPane2 = new JScrollPane();
+		JList<String> list = new JList<String>();
+		DefaultListModel<String> listenModell = new DefaultListModel<String>();
+		list.setBackground(SystemColor.inactiveCaptionBorder);
+		list.setModel(listenModell);
+		panel.add(scrollPane2);
+		scrollPane2.setViewportView(list);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(196, 0, 647, 455);
@@ -308,21 +330,40 @@ public class Warehouse {
 		scrollPane_1.setViewportView(inventory);
 		inventory.addTreeSelectionListener(new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent evn) {
-				panel_Border.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), evn.getPath().toString().split("\\(")[0], TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
-				System.out.println("");
+				panel_Border.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), evn.getPath().toString().split("\\(")[0].replace("[", "").replace("]", ""), TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
+				listenModell.clear();
+				
+				if(InstanceH.getInstance().getHistory().size() > 0 && inventory.getSelectionPath() != null)
+					showTransactions(listenModell);
+				else
+					listenModell.add(0,"Es sind noch keine Transaktionen getätigt worden");
 			}
 		});
-
-
+	}
+	
+	private void showTransactions(DefaultListModel<String> listenModell) {
 		
-		JPanel panel = new JPanel();
-		panel.setBounds(6, 16, 833, 199);
-		panel_Border.add(panel);
-		panel.setBackground(SystemColor.inactiveCaptionBorder);
-		panel.setLayout(new BorderLayout(0, 0));
+		/*
+		 * Hier wird verglichen welches Lager angeklickt wurde, mit den Lagern aus der History
+		 * diese Methode eignet sich nur auf beschränkte Weise, da es bei gleichnamigen Lagern zu Problemen führt, 
+		 * diese jedoch hier nicht gegeben sind
+		*/
 		
-		JList list = new JList();
-		list.setBackground(SystemColor.inactiveCaptionBorder);
-		panel.add(list);
+		for (int i = 0; i < InstanceH.getInstance().getHistory().size(); i++) 
+		{
+			String name = InstanceH.getInstance().getHistory().get(i).getLager().getName();
+		
+			if(inventory.getSelectionPath().getLastPathComponent().toString().contains(name))
+			{
+				for (int j = 0; j < InstanceH.getInstance().getHistory().get(0).getTransaction().size(); j++) 
+				{
+					listenModell.add(j, (InstanceH.getInstance().getHistory().get(0).getTransaction().get(j)));
+				}	}
+			
+		}
+		
+		if(listenModell.size() == 0)
+			listenModell.add(0,"Es sind noch keine Transaktionen getätigt worden");
+		
 	}
 }

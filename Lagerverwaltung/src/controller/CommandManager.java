@@ -8,6 +8,7 @@ public interface CommandManager
 	public int redo();
 	public void execute(Lager lager);
 	public int getUnits();
+	public Lager getLager();
 }
 	    
 
