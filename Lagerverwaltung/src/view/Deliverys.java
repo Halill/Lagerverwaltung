@@ -64,8 +64,7 @@ public class Deliverys {
 		
 		JList<String> list = new JList<String>();
 		scrollPane.setViewportView(list);
-		DefaultListModel<String> listenModell = new DefaultListModel<String>();
-		listenModell.add(0, "Hier stehen Ihre Lieferungen");
+		DefaultListModel<String> listenModell = new DefaultListModel<String>();		
 		list.setModel(listenModell);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
@@ -111,5 +110,7 @@ public class Deliverys {
 			if(history.get(i).isAllowed() && !listenModell.contains(history.get(i).getLager().getName()))
 				listenModell.addElement(history.get(i).getLager().getName());
 		}
+		if(listenModell.size() == 0)
+			listenModell.add(0, "Hier stehen Ihre Lieferungen");
 	}
 }
