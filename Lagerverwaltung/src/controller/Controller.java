@@ -7,6 +7,7 @@ import model.InstanceH;
 import model.Lager;
 import model.Model;
 import view.Buchen;
+import view.Deliverys;
 import view.Warehouse;
 import view.Welcome;
 
@@ -56,6 +57,12 @@ public class Controller {
 		Buchen window = new Buchen(warehouse);
 		window.frame.setVisible(true);		
 		ObserverTree.getInstance().addObserver(window);
+	}
+	
+	public void openDelivery()
+	{
+		Deliverys window = new Deliverys();
+		window.frame.setVisible(true);;
 	}
 
 	public static Controller getInstance() {

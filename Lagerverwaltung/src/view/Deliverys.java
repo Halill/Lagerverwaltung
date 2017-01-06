@@ -20,23 +20,8 @@ import javax.swing.event.ListSelectionEvent;
 
 public class Deliverys {
 
-	JFrame frame;
+	public JFrame frame;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Deliverys window = new Deliverys();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.

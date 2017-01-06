@@ -27,6 +27,7 @@ import java.awt.BorderLayout;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import controller.CommandManager;
 import controller.Controller;
 import controller.File_Manager;
 import model.History;
@@ -158,8 +159,7 @@ public class Warehouse implements Observer{
 		delivery_button.setLocation(0,(root.getChildCount() + 2) * 30);
 		delivery_button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Deliverys window = new Deliverys();
-				window.frame.setVisible(true);
+			Controller.getInstance().openDelivery();
 			}
 		});
 		navigationBar.add(delivery_button);
