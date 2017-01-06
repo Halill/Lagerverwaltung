@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Path;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -94,6 +95,8 @@ public class File_Manager
         JFileChooser chooser = new JFileChooser(System.getProperty("user.dir") + "\\Resources");
         // Dialog zum Speichern von Dateien anzeigen
         chooser.showDialog(null, "Öffnen");
+        if(chooser.getSelectedFile() == null)
+        	return null;
 		String path = chooser.getSelectedFile().getAbsolutePath();
 		
 		ArrayList<Lager> lagerliste = new ArrayList<Lager>();

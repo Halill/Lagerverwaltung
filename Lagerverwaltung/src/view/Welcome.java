@@ -91,6 +91,8 @@ public class Welcome {
 			public void actionPerformed(ActionEvent e) {
 				File_Manager file = new File_Manager();
 				ArrayList<Lager> lager = file.load_inventory();
+				if(lager == null)
+					return;
 				Warehouse window = new Warehouse();
 				window.frame.setVisible(true);
 				window.getModel().setLagerliste(lager);

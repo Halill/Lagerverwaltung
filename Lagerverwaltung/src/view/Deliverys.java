@@ -70,5 +70,12 @@ public class Deliverys {
 		listenModell_1.add(0, "Klicken Sie auf eine Lieferung im die Detail zu erfahren");
 		list_1.setModel(listenModell_1);
 		scrollPane_1.setViewportView(list_1);
+		
+		load_history();
+	}
+
+	private void load_history() 
+	{
+		
 	}
 }
