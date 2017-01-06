@@ -19,10 +19,9 @@ public class Lager{
 	private Lager elternlager;
 	/** Attribut Kindlager. Eine Liste, die die Lager unter diesem Lager enthält.*/
 	private ArrayList<Lager> kindlager = new ArrayList<Lager>();
-	/**Attribut Lagerstatus.*/
-	
+	/**Attribut Buchungsliste. Hier*/
 	private ArrayList<Buchung> buchungsliste = new ArrayList<Buchung>();
-
+	/**Attribut Lagerstatus.*/
 	private static int ROOTLAGER = 0, TREELAGER = 1, LEAFLAGER = 2; 
 	
 	/**

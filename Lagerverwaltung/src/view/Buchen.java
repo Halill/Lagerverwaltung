@@ -81,6 +81,7 @@ public class Buchen extends Warehouse{
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
+
 				}
 			}
 		});

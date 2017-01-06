@@ -1,4 +1,4 @@
-Deutschland/55000/14300/Rootlager/kein Elternlager vorhanden/Niedersachsen,NRW,Bremen,Hessen,Sachsen,Brandenburg,MV
+Deutschland/55000/16000/Rootlager/kein Elternlager vorhanden/Niedersachsen,NRW,Bremen,Hessen,Sachsen,Brandenburg,MV
 Niedersachsen/1500/800/Treelager/Deutschland/Nienburg,Hannover-Misburg
 Nienburg/500/300/Leaflager/Niedersachsen/keine Kindlager vorhanden
 Hannover-Misburg/1000/500/Leaflager/Niedersachsen/keine Kindlager vorhanden
@@ -18,4 +18,4 @@ Italien/10000/9000/Treelager/Europa/Mailand,L'Aquila
 Mailand/5000/4500/Leaflager/Italien/keine Kindlager vorhanden
 L'Aquila/5000/4500/Leaflager/Italien/keine Kindlager vorhanden
 Spanien/5000/4500/Leaflager/Europa/keine Kindlager vorhanden
-Großbritannien/5000/4500/Rootlager/kein Elternlager vorhanden/keine Kindlager vorhanden
+Großbritannien/6000/4500/Rootlager/kein Elternlager vorhanden/keine Kindlager vorhanden

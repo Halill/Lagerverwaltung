@@ -12,6 +12,7 @@ public class Controller {
 	public static void main(String[] arg0){
 		Model m = new Model();
 
+
 		
 		//hier wird die Lagerstruktur generiert
 		m.legeInitialeStrukturFest();
@@ -23,6 +24,7 @@ public class Controller {
 		m.setLagerliste(lagerliste1);
 
 		m.sysoLagerstruktur(lagerliste1);
+
 	}
 
 }	
