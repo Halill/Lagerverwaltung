@@ -25,6 +25,7 @@ import java.awt.BorderLayout;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import controller.File_Manager;
 import model.History;
 import model.InstanceH;
 import model.Lager;
@@ -145,6 +146,28 @@ public class Warehouse implements Observer{
 			}
 		});
 		navigationBar.add(booking);
+		
+		JButton delivery_button = new JButton("Lieferliste");
+		delivery_button.setSize(197,30);
+		delivery_button.setLocation(0,(root.getChildCount() + 2) * 30);
+		delivery_button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Deliverys window = new Deliverys();
+				Deliverys.frame.setVisible(true);
+			}
+		});
+		navigationBar.add(delivery_button);
+		
+		JButton save_button = new JButton("Speichern");
+		save_button.setSize(197,30);
+		save_button.setLocation(0,(root.getChildCount() + 3) * 30);
+		save_button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				new File_Manager().save_inventory(lagerl);
+				System.out.println("Lager gespeichert");
+			}
+		});
+		navigationBar.add(save_button);
 	}
 	
 	public void refresh()
