@@ -187,7 +187,7 @@ public class Warehouse implements Observer{
 	private void changeLName() 
 	{
 		Lager l = getLagerFromTree();
-		if(l == null)
+		if(l == null || naviButtons == null )
 			return;
 		 String input = JOptionPane.showInputDialog("Wählen Sie einen neuen Namen:");
 		 
@@ -198,6 +198,18 @@ public class Warehouse implements Observer{
 				 JOptionPane.showMessageDialog(frame,"Der Name ist bereits vergeben");
 				 return;
 			 }
+		 }
+		
+		 
+		 for (int i = 0; i < naviButtons.length; i++) 
+		 {
+			 String name = naviButtons[i].getText().replace(" ", "");
+			 String lagerName = l.getName();
+			 if(name == null)
+				 continue;
+			 if(name.equals(lagerName))
+				 naviButtons[i].setText(input); 
+			 
 		 }
 		 l.setName(input);
 		 refresh();
@@ -297,7 +309,8 @@ public class Warehouse implements Observer{
 		TreePath path = new TreePath(node.getPath());
 		String name = root.getChildAt(i).toString().split("\\(")[0];
 		
-		naviButtons[i] = new JButton(name);
+		naviButtons[i] = new JButton();
+		naviButtons[i].setText(name);
 		naviButtons[i].setSize(197,30);
 		naviButtons[i].setLocation(0,i * 30);	
 		treePath.add(path);
