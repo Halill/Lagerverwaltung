@@ -1,19 +1,16 @@
 package view;
 
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import javax.swing.JList;
-import javax.swing.AbstractListModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JScrollPane;
 
 import model.History;
 import model.InstanceH;
 
-import java.awt.FlowLayout;
 import java.util.ArrayList;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;

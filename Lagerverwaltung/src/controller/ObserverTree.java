@@ -1,12 +1,7 @@
 package controller;
 
 import java.util.Observable;
-import java.util.Observer;
-
 import javax.swing.tree.DefaultTreeModel;
-
-import model.InstanceH;
-import view.Warehouse;
 
 public class ObserverTree extends Observable
 {

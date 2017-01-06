@@ -1,7 +1,5 @@
 package view;
 
-import java.awt.EventQueue;
-
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -27,7 +25,6 @@ import java.awt.BorderLayout;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-import controller.CommandManager;
 import controller.Controller;
 import controller.File_Manager;
 import model.History;

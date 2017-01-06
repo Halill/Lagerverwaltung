@@ -1,34 +1,18 @@
 package view;
 
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import javax.swing.JTree;
-import javax.swing.JTextField;
 import javax.swing.JLabel;
-import java.awt.GridBagConstraints;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
 
 import controller.Controller;
 import controller.File_Manager;
-import controller.ObserverTree;
 import model.Lager;
 
-import com.jgoodies.forms.layout.FormSpecs;
-import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.CardLayout;
-import javax.swing.JTextPane;
-import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
@@ -36,22 +20,6 @@ import java.awt.event.ActionEvent;
 public class Welcome {
 
 	public JFrame frame;
-
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					Welcome window = new Welcome();
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
 
 	/**
 	 * Create the application.
