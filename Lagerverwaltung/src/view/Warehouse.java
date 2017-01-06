@@ -205,7 +205,7 @@ public class Warehouse implements Observer{
 
 	public void refresh()
 	{		
-		refreshTreeNodes();
+
 		
 		inventory.setModel(null);
 		//m.sysoLagerstruktur(lagerl);
@@ -217,10 +217,10 @@ public class Warehouse implements Observer{
 		DefaultTreeModel model = new DefaultTreeModel(root);
 	
 		inventory.setModel(model);	
-		setTree(inventory);
+
 		generateTree(root, nodes);
 		
-
+		refreshTreeNodes();
 	}
 
 	public void generateTree(DefaultMutableTreeNode root, DefaultMutableTreeNode[] nodes) {
