@@ -16,6 +16,7 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 
 import controller.File_Manager;
+import controller.ObserverTree;
 import model.Lager;
 
 import com.jgoodies.forms.layout.FormSpecs;
@@ -76,6 +77,7 @@ public class Welcome {
 			public void actionPerformed(ActionEvent arg0) {				
 				Warehouse window = new Warehouse();
 				window.frame.setVisible(true);		
+				ObserverTree.getInstance().addObserver(window);
 				frame.dispose();
 			}
 		});

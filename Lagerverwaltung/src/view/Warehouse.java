@@ -1,7 +1,7 @@
 package view;
 
 import java.awt.EventQueue;
-import java.awt.List;
+
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -14,6 +14,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JTree;
 import javax.swing.ListModel;
@@ -26,6 +28,7 @@ import java.awt.BorderLayout;
 import java.awt.ScrollPane;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import controller.File_Manager;
@@ -55,14 +58,14 @@ import com.jgoodies.forms.layout.RowSpec;
 import javax.swing.JTextPane;
 import javax.swing.AbstractListModel;
 
-public class Warehouse {
+public class Warehouse implements Observer{
 
 	JFrame frame;
 	private JTree inventory;
 	private JPanel navigationBar;
 	private JButton[] naviButtons;
 	private Model m;
-	private ArrayList<Lager> lagerl;
+	private ArrayList<Lager> lagerl = new ArrayList<>();
 
 
 	/**
@@ -85,6 +88,12 @@ public class Warehouse {
 	/**
 	 * Create the application.
 	 */
+	public Warehouse(ArrayList<Lager> lagerliste) 
+	{
+		this.lagerl = lagerliste;
+		initialize();
+		load_Inventory();
+	}
 	public Warehouse() 
 	{
 		initialize();
@@ -120,27 +129,14 @@ public class Warehouse {
 	
 	private void load_Inventory() 
 	{		
-		setModel(new Model());		
-		setLager(new ArrayList<Lager>());
-		
-		m.legeInitialeStrukturFest();
-		lagerl = m.getLagerliste();
-		
-		//m.sysoLagerstruktur(lagerl);
-		
-		
-	//	Lager neuesLager = m.lagerAnlegen("neues Lager", 0, 0);
-
-//		Test für Fall 1: Das neue Lager wird über Deutschland angelegt
-//		m.neuesLagereinfuegen(lagerl.get(9), neuesLager);
-		
-//		Test für Fall 2: Das neue Lager wird zwischen Deutschland und MV eingefügt
-//		m.neuesLagereinfuegen(lagerl.get(9), lagerl.get(8), neuesLager);
-		
-//		Test für Fall 3: Das neue Lager wird unter MV eingefügt
-//		m.neuesLagereinfuegen(lagerl.get(8), neuesLager);
-		
-		m.sysoLagerstruktur(lagerl);
+		if (lagerl.size() == 0) 
+		{
+			setModel(new Model());
+			setLager(new ArrayList<Lager>());
+			m.legeInitialeStrukturFest();
+			lagerl = m.getLagerliste();
+			m.sysoLagerstruktur(lagerl);
+		}
 		
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Gesamtlager");
 		DefaultMutableTreeNode[] nodes = new DefaultMutableTreeNode[lagerl.size()];
@@ -168,7 +164,6 @@ public class Warehouse {
 			public void actionPerformed(ActionEvent arg0) {
 				Buchen window = new Buchen();
 				window.frame.setVisible(true);
-
 			}
 		});
 		navigationBar.add(booking);
@@ -176,16 +171,18 @@ public class Warehouse {
 	
 	public void refresh()
 	{		
-		inventory = new JTree();
-		m.sysoLagerstruktur(lagerl);
+		inventory.setModel(null);
+		//m.sysoLagerstruktur(lagerl);
 		
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Gesamtlager2");
+		
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Gesamtlager");
 		DefaultMutableTreeNode[] nodes = new DefaultMutableTreeNode[lagerl.size()];
-		generateTree(root, nodes);
+	
 		
 		DefaultTreeModel model = new DefaultTreeModel(root);
 	
 		inventory.setModel(model);	
+		generateTree(root, nodes);
 		
 
 	}
@@ -247,11 +244,12 @@ public class Warehouse {
 	        if (node.toString().equalsIgnoreCase(s)) {
 	            return node;
 	        }
+	        System.out.println(node.toString());
 	    }
 	    return null;
 	}	
 
-	private DefaultMutableTreeNode addInfo(DefaultMutableTreeNode node, Lager lager) 
+	public DefaultMutableTreeNode addInfo(DefaultMutableTreeNode node, Lager lager) 
 	{
 		node = new DefaultMutableTreeNode(lager.getName() + " (Kapazitaet: " + lager.getKapazitaet() + " Bestand: " + lager.getBestand() + ")");
 		return node;
@@ -348,22 +346,26 @@ public class Warehouse {
 		 * diese Methode eignet sich nur auf beschränkte Weise, da es bei gleichnamigen Lagern zu Problemen führt, 
 		 * diese jedoch hier nicht gegeben sind
 		*/
-		
+		boolean allowed;
 		for (int i = 0; i < InstanceH.getInstance().getHistory().size(); i++) 
 		{
+			allowed = InstanceH.getInstance().getHistory().get(i).isAllowed();
 			String name = InstanceH.getInstance().getHistory().get(i).getLager().getName();
 		
-			if(inventory.getSelectionPath().getLastPathComponent().toString().contains(name))
-			{
-				for (int j = 0; j < InstanceH.getInstance().getHistory().get(0).getTransaction().size(); j++) 
-				{
-					listenModell.add(j, (InstanceH.getInstance().getHistory().get(0).getTransaction().get(j)));
-				}	}
-			
+			if(allowed && inventory.getSelectionPath().getLastPathComponent().toString().contains(name))
+				listenModell.add(listenModell.getSize(), (InstanceH.getInstance().getHistory().get(i).getTransaction()));	
+
 		}
-		
 		if(listenModell.size() == 0)
 			listenModell.add(0,"Es sind noch keine Transaktionen getätigt worden");
 		
+	}
+
+	@Override
+	public void update(Observable arg0, Object arg1) 
+	{		
+		System.out.println("Test");
+		inventory.setModel((DefaultTreeModel) arg1);
+
 	}
 }

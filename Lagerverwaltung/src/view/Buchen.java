@@ -20,6 +20,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -29,21 +30,28 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.Element;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import controller.Book;
 import controller.CommandManager;
+import controller.ObserverTree;
 import model.Buchung;
 import model.History;
 import model.InstanceH;
 import model.Lager;
+import model.Model;
+
 import javax.swing.JTree;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.rmi.server.UnicastRemoteObject;
+import java.text.SimpleDateFormat;
 import java.awt.event.InputMethodListener;
 import java.awt.event.InputMethodEvent;
 
+import java.util.Observable;
 
 public class Buchen extends Warehouse{
 
@@ -59,7 +67,9 @@ public class Buchen extends Warehouse{
     private ArrayList<CommandManager> commands = new ArrayList<CommandManager>();
     private CommandManager last_command;
     private ArrayList<History> history = new ArrayList<History>();
-
+    private Date datum = new Date();
+    private JLabel info_Label;
+    
 	/**
 	 * Launch the application.
 	 */
@@ -104,8 +114,9 @@ public class Buchen extends Warehouse{
 			@Override
 			public void keyTyped(KeyEvent evt) {
 			      char enter = evt.getKeyChar();
-			        if(!(Character.isDigit(enter))){
+			        if(!(Character.isDigit(enter)) || canBook){
 			            evt.consume();
+						checkTextField();
 			        }			      
 			}
 		});
@@ -118,19 +129,7 @@ public class Buchen extends Warehouse{
 			@Override
 			public void insertUpdate(DocumentEvent arg0) 
 			{						
-				int units = Integer.parseInt(textField.getText());	
-				if(units > capacity || units < currentUnits * -1)
-				{
-					System.out.println("Es sind nicht genügend Resourcen vorhanden");
-					textField.setForeground(Color.red);
-					canBook = false;
-				}
-				else
-				{
-					System.out.println("Zu verteilende Einheiten: " + textField.getText());
-					textField.setForeground(Color.black);
-					canBook = true;
-				}
+				checkTextField();
 			}
 
 			@Override
@@ -172,7 +171,7 @@ public class Buchen extends Warehouse{
 		});
 		add_ten.setBounds(421, 69, 64, 23);
 		panel.add(add_ten);
-		
+
 		JButton add_hundred = new JButton("+100");
 		add_hundred.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -307,33 +306,11 @@ public class Buchen extends Warehouse{
 		Buchen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				int u = 0;
-				Lager l;
-				for (int i = 0; i < commands.size(); i++)
-				{			
-					l = commands.get(i).getLager();
-					u = commands.get(i).getUnits();
-					for (int j = 0; j < commands.size(); j++) 
-					{
-						if(history.size() > j && history.get(j).getLager().equals(l))
-						{
-							history.get(j).addTransaction(u + " Einheiten wurden transferiert");
-							System.out.println("Gabs schon");
-							break;
-						}
-						else
-						{
-							History h = new History();
-							h.setLager(l);
-							h.addTransaction(u + " Einheiten wurden transferiert");
-							System.out.println("Neu");
-							history.add(h);
-							break;
-						}
-					}		
-				}
 				InstanceH.getInstance().setHistory(history);
+				ObserverTree.getInstance().setTreeModel((DefaultTreeModel) tree.getModel());
 				
+				refresh();
+				frame.dispose();
 //				Buchung buchen = new Buchung();
 //				if(all_Units > 0)
 //					buchen.setBuchungstyp(1);
@@ -387,11 +364,10 @@ public class Buchen extends Warehouse{
 		panel_1.add(scrollPane);
 		
 		tree = new JTree();
-		tree.setModel(getTree().getModel());		
-		scrollPane.setViewportView(tree);
-		tree.addTreeSelectionListener(new TreeSelectionListener() {
-			public void valueChanged(TreeSelectionEvent evn) 
-			{
+		tree.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				
 				if(canBook)
 				{
 					add_one.setEnabled(false);
@@ -408,9 +384,16 @@ public class Buchen extends Warehouse{
 				}
 			}
 		});
+		tree.setModel(getTree().getModel());		
+		scrollPane.setViewportView(tree);
+
 		expandAllNodes(0,tree.getRowCount());
 		getAllCapacity(); 
 		textField.setForeground(Color.black);
+		
+		info_Label = new JLabel("");
+		info_Label.setBounds(10, 394, 370, 25);
+		frame.getContentPane().add(info_Label);
 	}
 	
 
@@ -431,63 +414,199 @@ public class Buchen extends Warehouse{
 	}
 	
 	private void buche_auf_Lager() 
-	{		
-		
+	{				
 		double menge = ((double)percent_Step * all_Units) / 100.0;
 		int m = (int)menge;
 		int freeUnits;		
-		int Units_left = Integer.parseInt(textField.getText());
+		int units_left = Integer.parseInt(textField.getText());
 	
 		Book b = new Book();
 		Lager l = getLagerFromTree();
 		
-		if(l == null || Units_left <= 0)
+		if(l.getKindlager().size() > 0)
+		{
+			setInfoLabel("Bitte ein Lager auswählen was auch verwalted werden kann", Color.red);
+			return;
+			//buche_auf_Kinder(l,units_left,m,menge,0);	//Diese Methode wurde aus Zeit gründen nicht Fertiggestellt. Funktioniert nur mit kleinen Abweichungen
+		}
+		
+		if(l == null || units_left <= 0)
+		{	
+			setInfoLabel("Kein Lager ausgewählt", Color.red);
+			return;
+		}
+		freeUnits =  l.getKapazitaet() - l.getBestand();
+		
+		if(menge >= 0.5 && menge < 1.0 && units_left > 0)
+		{
+			if(freeUnits >= 1)
+				b.setMenge(1);
+			else
+			{	
+				setInfoLabel("Die Kapazität reicht nicht aus", Color.red);
+				return;
+			}
+			units_left--;		
+		}
+		else if(m > 0)
+		{
+			if (units_left >= m) 
+			{			
+				if(freeUnits >= m)
+					b.setMenge(m);
+				else
+				{	
+					setInfoLabel("Die Kapazität reicht nicht aus", Color.red);
+					return;
+				}
+				
+				units_left -= m;
+			}
+			else
+			{
+				if(freeUnits >= units_left)
+					b.setMenge(units_left);
+				else
+				{	
+					setInfoLabel("Die Kapazität reicht nicht aus", Color.red);
+					return;
+				}		
+				units_left = 0;
+			}
+		}
+		else 
+		{
+			setInfoLabel("1 Einheit kann nur als ganzes verwalted werden. Ab 50% aufr.",Color.red);
+			return;
+		}
+				
+		textField.setText(units_left + "");
+		l.setBestand(l.getBestand() + b.getMenge());
+		b.execute(l);
+		commands.add(b);
+		last_command = b;
+		stepChanged();
+		
+		
+		History h = new History();
+		h.setLager(l);
+		h.setAllowed(true);
+		h.setNode((DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent());
+		//Datum und Zeit einholen und festsetzen
+		setDatum();
+		h.addTransaction(getDatum() + ": " + b.getMenge() + " Einheiten wurden transferiert");
+		history.add(h);
+		
+		if (getLagerFromTree().getKindlager().size() == 0)
+		{
+			DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent();
+			node.setUserObject(addInfo(node,getLagerFromTree()).getUserObject());
+			model.nodeChanged(node);
+		}
+		setInfoLabel("Einheiten wurden verteilt",Color.black);
+		
+		
+	}
+	
+	private void buche_auf_Lager(Lager l,int units_left, int offset) 
+	{				
+		double menge = ((double)percent_Step * all_Units) / 100.0;
+		int m = (int)menge;
+		int freeUnits;
+	
+		Book b = new Book();
+				
+		units_left += offset;
+		
+		if(l == null || units_left <= 0)
 			return;
 		freeUnits =  l.getKapazitaet() - l.getBestand();
 		
-		if(menge >= 0.5 && menge < 1.0 && Units_left > 0)
+		if(menge >= 0.5 && menge < 1.0 && units_left > 0)
 		{
 			if(freeUnits >= 1)
 				b.setMenge(1);
 			else
 				return;
-			Units_left--;		
+			units_left--;		
 		}
 		else if(m > 0)
 		{
-			if (Units_left >= m) 
+			if (units_left >= m) 
 			{			
 				if(freeUnits >= m)
 					b.setMenge(m);
 				else
 					return;
 				
-				Units_left -= m;
+				units_left -= m;
 			}
 			else
 			{
-				if(freeUnits >= Units_left)
-					b.setMenge(Units_left);
+				if(freeUnits >= units_left)
+					b.setMenge(units_left);
 				else
 					return;			
-				Units_left = 0;
+				units_left = 0;
 			}
 		}
 		else 
 		{
-			System.out.println("Eine größere Prozentzahl wählen");
+			setInfoLabel("Eine größere Prozentzahl wählen",Color.red);
 			return;
 		}
 		
-		textField.setText(Units_left + "");
+		
+		textField.setText(units_left + "");
+		l.setBestand(l.getBestand() + b.getMenge());
 		b.execute(l);
 		commands.add(b);
 		last_command = b;
-		
 		stepChanged();
+		
+		
+		History h = new History();
+		h.setLager(l);
+		h.setAllowed(true);
+		h.setNode((DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent());
+		setDatum();
+		h.addTransaction(getDatum() + ": " + b.getMenge() + " Einheiten wurden transferiert");
+		history.add(h);
+		setInfoLabel("Einheiten wurden verteilt",Color.black);
+		
 		
 	}
 	
+	private void buche_auf_Kinder(Lager l, int units_left, int m, double menge, int offset) 
+	{
+		
+		int count = l.getKindlager().size();
+		int offsets = units_left % count;	
+		offsets += offset;
+		
+		if(offsets == 0)
+			units_left = units_left / count;
+		else
+		{
+			offset = offsets % count;
+			offsets = Math.floorDiv(offsets,count) + offset;
+			
+			units_left = Math.floorDiv(units_left,count) + offsets;
+
+		}
+		
+		
+		for (int i = 0; i < count; i++) 
+		{
+			if(l.getKindlager().get(i).getKindlager().size() > 0)
+				buche_auf_Kinder(l.getKindlager().get(i), units_left, m, menge, offsets);
+			else
+				buche_auf_Lager(l,units_left,offsets);
+		}
+		
+	}
+
 	private Lager getLagerFromTree() {
 
 		String index = tree.getLastSelectedPathComponent().toString();
@@ -515,15 +634,19 @@ public class Buchen extends Warehouse{
 	    }
 	}
 
+	
 	private void stepChanged() {
 		
 		rest_label.setText(percent_Step + "% Schritte von " + all_Units);
 		
 	}
 	
+	
 	private void undo() {
 		int i = commands.indexOf(last_command);
 		commands.get(i).undo();
+		history.get(i).setAllowed(false);
+		
 		if(i >= 0)
 		{
 			if(i > 0)
@@ -534,6 +657,18 @@ public class Buchen extends Warehouse{
 			int units = Integer.parseInt(textField.getText());
 			units += commands.get(i).getUnits();
 			textField.setText(units + "");
+			
+			
+			commands.get(i).getLager().setBestand(commands.get(i).getLager().getBestand() - commands.get(i).getMenge() * 3);
+			
+			if (history.get(i).getLager().getKindlager().size() == 0)
+			{
+				DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+				DefaultMutableTreeNode node = history.get(i).getNode();
+				node.setUserObject(addInfo(node,history.get(i).getLager()).getUserObject());
+				
+				model.nodeChanged(node);
+			}
 		}
 	}
 	private void redo() {
@@ -545,12 +680,74 @@ public class Buchen extends Warehouse{
 		{
 			last_command = commands.get(i);
 			commands.get(i).redo();
+			history.get(i).setAllowed(true);
 			last_command = commands.get(i);
 			
 			int units = Integer.parseInt(textField.getText());
 			units -= commands.get(i).getUnits();
 			textField.setText(units + "");
+			
+			commands.get(i).getLager().setBestand(commands.get(i).getLager().getBestand() + commands.get(i).getMenge() * 3);
+			
+			if (history.get(i).getLager().getKindlager().size() == 0)
+			{
+				DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+				DefaultMutableTreeNode node = history.get(i).getNode();
+				node.setUserObject(addInfo(node,history.get(i).getLager()).getUserObject());
+				
+				model.nodeChanged(node);
+			}
 		}
 
+	}
+
+	private void checkTextField() {
+		
+		if(textField.getText().length() == 0 || textField.getText().equals("0"))
+		{
+				tree.setEnabled(false);
+				return;
+		}
+		else if(tree != null)
+			tree.setEnabled(true);
+		
+		int units = Integer.parseInt(textField.getText());	
+		if(units > capacity || units < currentUnits * -1)
+		{
+			setInfoLabel("Es sind nicht genügend Resourcen vorhanden",Color.red);
+			textField.setForeground(Color.red);
+			canBook = false;
+		}
+		else
+		{
+			setInfoLabel("Zu verteilende Einheiten: " + textField.getText(),Color.black);
+			textField.setForeground(Color.black);
+			canBook = true;
+		}
+	}
+	
+	/**
+	 * Getter-Methode des Buchungsdatums und der Zeit.
+	 * Hier wird auch dies formatiert.
+	 * @return gibt die Buchungszeit und -datum im folgendem Format als String aus: dd.MM.yyyy HH:mm:ss
+	 */
+	public String getDatum() {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+		return simpleDateFormat.format(datum);
+	}
+	/**
+	 * Setter-Methode für das Datum und die Zeit
+	 */
+	public void setDatum() {
+		datum = new Date();
+		
+	}
+	public void setInfoLabel(String info,Color color)
+	{
+		if (color != null && info_Label != null)
+		{
+			info_Label.setForeground(color);
+			info_Label.setText(info);
+		}
 	}
 }

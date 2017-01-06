@@ -9,6 +9,7 @@ public interface CommandManager
 	public void execute(Lager lager);
 	public int getUnits();
 	public Lager getLager();
+	public int getMenge();
 }
 	    
 
