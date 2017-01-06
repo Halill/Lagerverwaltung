@@ -376,9 +376,17 @@ public class Buchen extends Warehouse{
 					rem_hundred.setEnabled(false);
 					rem_thousand.setEnabled(false);
 				
-					buche_auf_Lager();
+					if (Integer.parseInt(textField.getText()) > 0)
+					{
+						buche_auf_Lager();
+					}
+					else
+					{
+						lösche_von_Lager();
+					}
 				}
 			}
+			
 		});
 		tree.setModel(getTree().getModel());		
 		scrollPane.setViewportView(tree);
@@ -388,7 +396,7 @@ public class Buchen extends Warehouse{
 		textField.setForeground(Color.black);
 		
 		info_Label = new JLabel("");
-		info_Label.setBounds(10, 394, 370, 25);
+		info_Label.setBounds(10, 394, 378, 25);
 		frame.getContentPane().add(info_Label);
 	}
 	
@@ -472,7 +480,7 @@ public class Buchen extends Warehouse{
 		}
 		else 
 		{
-			setInfoLabel("1 Einheit kann nur als ganzes verwalted werden. Ab 50% aufr.",Color.red);
+			setInfoLabel("1 Einheit kann nur als ganzes verwalted werden. Ab 50% aufrunden.",Color.red);
 			return;
 		}
 				
@@ -505,56 +513,76 @@ public class Buchen extends Warehouse{
 		
 	}
 	
-	private void buche_auf_Lager(Lager l,int units_left, int offset) 
-	{				
-		double menge = ((double)percent_Step * all_Units) / 100.0;
+	
+	private void lösche_von_Lager() 
+	{
+		double menge = ((double)percent_Step * all_Units *-1) / 100.0;
 		int m = (int)menge;
-		int freeUnits;
+		int UnitsToDelete;		
+		int units_left = Integer.parseInt(textField.getText()) *-1;
 	
 		Book b = new Book();
-				
-		units_left += offset;
+		Lager l = getLagerFromTree();
+		
+		if(l.getKindlager().size() > 0)
+		{
+			setInfoLabel("Bitte ein Lager auswählen was auch verwalted werden kann", Color.red);
+			return;
+			//buche_auf_Kinder(l,units_left,m,menge,0);	//Diese Methode wurde aus Zeit gründen nicht Fertiggestellt. Funktioniert nur mit kleinen Abweichungen
+		}
 		
 		if(l == null || units_left <= 0)
+		{	
+			setInfoLabel("Kein Lager ausgewählt oder keine Einheiten zu verteilen", Color.red);
 			return;
-		freeUnits =  l.getKapazitaet() - l.getBestand();
+		}
+		UnitsToDelete =  l.getBestand();
 		
 		if(menge >= 0.5 && menge < 1.0 && units_left > 0)
 		{
-			if(freeUnits >= 1)
-				b.setMenge(1);
+			if(UnitsToDelete >= 1)
+				b.setMenge(-1);
 			else
+			{	
+				setInfoLabel("Es sind nicht genügend Einheiten vorhanden", Color.red);
 				return;
+			}
 			units_left--;		
 		}
 		else if(m > 0)
 		{
 			if (units_left >= m) 
 			{			
-				if(freeUnits >= m)
-					b.setMenge(m);
+				if(UnitsToDelete >= m)
+					b.setMenge(-m);
 				else
+				{	
+					setInfoLabel("Es sind nicht genügend Einheiten vorhanden", Color.red);
 					return;
+				}
 				
 				units_left -= m;
 			}
 			else
 			{
-				if(freeUnits >= units_left)
-					b.setMenge(units_left);
+				if(UnitsToDelete >= units_left)
+					b.setMenge(-units_left);
 				else
-					return;			
+				{	
+					setInfoLabel("Es sind nicht genügend Einheiten vorhanden", Color.red);
+					return;
+				}		
 				units_left = 0;
 			}
 		}
 		else 
 		{
-			setInfoLabel("Eine größere Prozentzahl wählen",Color.red);
+			setInfoLabel("1 Einheit kann nur als ganzes verwalted werden. Ab 50% aufrunden",Color.red);
 			return;
 		}
-		
-		
-		textField.setText(units_left + "");
+				
+		textField.setText(-units_left + "");
+		//Menge wird hier auf die Lager gebucht
 		b.execute(l);
 		commands.add(b);
 		last_command = b;
@@ -565,42 +593,121 @@ public class Buchen extends Warehouse{
 		h.setLager(l);
 		h.setAllowed(true);
 		h.setNode((DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent());
+		//Datum und Zeit einholen und festsetzen
 		setDatum();
 		h.addTransaction(getDatum() + ": " + b.getMenge() + " Einheiten wurden transferiert");
 		history.add(h);
+		
+		if (getLagerFromTree().getKindlager().size() == 0)
+		{
+			DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent();
+			node.setUserObject(addInfo(node,getLagerFromTree()).getUserObject());
+			model.nodeChanged(node);
+		}
 		setInfoLabel("Einheiten wurden verteilt",Color.black);
 		
-		
-	}
+	}	
 	
-	private void buche_auf_Kinder(Lager l, int units_left, int m, double menge, int offset) 
-	{
-		
-		int count = l.getKindlager().size();
-		int offsets = units_left % count;	
-		offsets += offset;
-		
-		if(offsets == 0)
-			units_left = units_left / count;
-		else
-		{
-			offset = offsets % count;
-			offsets = Math.floorDiv(offsets,count) + offset;
-			
-			units_left = Math.floorDiv(units_left,count) + offsets;
-
-		}
-		
-		
-		for (int i = 0; i < count; i++) 
-		{
-			if(l.getKindlager().get(i).getKindlager().size() > 0)
-				buche_auf_Kinder(l.getKindlager().get(i), units_left, m, menge, offsets);
-			else
-				buche_auf_Lager(l,units_left,offsets);
-		}
-		
-	}
+	
+	//Folgende Methode ist für die Verteilung auf Kindlager zustädnig wenn ein Root oder Treelager ausgewält wurde
+	//Da dies keine Anforderung war und diese Methode nicht ganz Fehlerfrei läuft wurde es aus Zeitgründen eingestellt 
+//	private void buche_auf_Lager(Lager l,int units_left, int offset) 
+//	{				
+//		double menge = ((double)percent_Step * all_Units) / 100.0;
+//		int m = (int)menge;
+//		int freeUnits;
+//	
+//		Book b = new Book();
+//				
+//		units_left += offset;
+//		
+//		if(l == null || units_left <= 0)
+//			return;
+//		freeUnits =  l.getKapazitaet() - l.getBestand();
+//		
+//		if(menge >= 0.5 && menge < 1.0 && units_left > 0)
+//		{
+//			if(freeUnits >= 1)
+//				b.setMenge(1);
+//			else
+//				return;
+//			units_left--;		
+//		}
+//		else if(m > 0)
+//		{
+//			if (units_left >= m) 
+//			{			
+//				if(freeUnits >= m)
+//					b.setMenge(m);
+//				else
+//					return;
+//				
+//				units_left -= m;
+//			}
+//			else
+//			{
+//				if(freeUnits >= units_left)
+//					b.setMenge(units_left);
+//				else
+//					return;			
+//				units_left = 0;
+//			}
+//		}
+//		else 
+//		{
+//			setInfoLabel("Eine größere Prozentzahl wählen",Color.red);
+//			return;
+//		}
+//		
+//		
+//		textField.setText(units_left + "");
+//		b.execute(l);
+//		commands.add(b);
+//		last_command = b;
+//		stepChanged();
+//		
+//		
+//		History h = new History();
+//		h.setLager(l);
+//		h.setAllowed(true);
+//		h.setNode((DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent());
+//		setDatum();
+//		h.addTransaction(getDatum() + ": " + b.getMenge() + " Einheiten wurden transferiert");
+//		history.add(h);
+//		setInfoLabel("Einheiten wurden verteilt",Color.black);
+//		
+//		
+//	}
+//	
+//	private void buche_auf_Kinder(Lager l, int units_left, int m, double menge, int offset) 
+//	{
+//		
+//		int count = l.getKindlager().size();
+//		int offsets = units_left % count;	
+//		offsets += offset;
+//		
+//		if(offsets == 0)
+//			units_left = units_left / count;
+//		else
+//		{
+//			offset = offsets % count;
+//			offsets = Math.floorDiv(offsets,count) + offset;
+//			
+//			units_left = Math.floorDiv(units_left,count) + offsets;
+//
+//		}
+//		
+//		
+//		for (int i = 0; i < count; i++) 
+//		{
+//			if(l.getKindlager().get(i).getKindlager().size() > 0)
+//				buche_auf_Kinder(l.getKindlager().get(i), units_left, m, menge, offsets);
+//			else
+//				buche_auf_Lager(l,units_left,offsets);
+//		}
+//		
+//	}
 
 	private Lager getLagerFromTree() {
 
