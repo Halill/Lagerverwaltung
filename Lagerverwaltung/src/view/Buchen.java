@@ -46,6 +46,7 @@ import java.text.SimpleDateFormat;
 public class Buchen extends Warehouse{
 
 	JFrame frame;
+	Warehouse warehouse;
 	private JTextField textField;
 	private int percent_Step = 5;
 	private int all_Units = 1;
@@ -63,24 +64,26 @@ public class Buchen extends Warehouse{
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Buchen window = new Buchen();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					Buchen window = new Buchen(frame);
+//					window.frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the application.
+	 * @param Frame übergeben
 	 */
-	public Buchen() {
+	public Buchen(Warehouse wareh) {
+		warehouse = wareh;
 		initialize();	
 	}
 
@@ -307,22 +310,6 @@ public class Buchen extends Warehouse{
 				ObserverTree.getInstance().setTreeModel((DefaultTreeModel) tree.getModel());
 				refresh();
 				frame.dispose();
-//				Buchung buchen = new Buchung();
-//				if(all_Units > 0)
-//					buchen.setBuchungstyp(1);
-//				else
-//					buchen.setBuchungstyp(0);
-//
-//				buchen.setDatum();				
-//				buchen.setBuchungLagerListe(getLager());
-//				buchen.setMenge(Integer.parseInt(textField.getText()));
-//								
-//				if (buchen.getMenge() > 0 ) 
-//					buchen.zubuchen();				
-//				else 
-//					buchen.abbuchen();
-//				
-//				refresh();
 			}
 		});
 		Buchen.setBounds(596, 386, 105, 38);
@@ -388,7 +375,7 @@ public class Buchen extends Warehouse{
 			}
 			
 		});
-		tree.setModel(getTree().getModel());		
+		tree.setModel(warehouse.getTree().getModel());		
 		scrollPane.setViewportView(tree);
 
 		expandAllNodes(0,tree.getRowCount());
@@ -405,11 +392,14 @@ public class Buchen extends Warehouse{
 		
 		capacity = 0;
 
+
 		for (int i = 0; i < tree.getModel().getChildCount(tree.getModel().getRoot()); i++) {
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getModel().getChild(tree.getModel().getRoot(), i);
 			TreePath path = new TreePath(node.getPath());
 			tree.setSelectionPath(path);
 			Lager l = getLagerFromTree();
+			if(l == null)
+				return;
 			capacity += (l.getKapazitaet() - l.getBestand());
 			currentUnits += l.getBestand();
 		}
@@ -713,7 +703,7 @@ public class Buchen extends Warehouse{
 
 		String index = tree.getLastSelectedPathComponent().toString();
 		
-		for(Lager l : getLager())
+		for(Lager l : warehouse.getLager())
 		{
 			if(index.contains(l.getName()))
 			{

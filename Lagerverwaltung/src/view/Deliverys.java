@@ -20,7 +20,7 @@ import javax.swing.event.ListSelectionEvent;
 
 public class Deliverys {
 
-	static JFrame frame;
+	JFrame frame;
 
 	/**
 	 * Launch the application.

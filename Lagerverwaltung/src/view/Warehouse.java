@@ -21,6 +21,8 @@ import javax.swing.JButton;
 import javax.swing.border.TitledBorder;
 import javax.swing.UIManager;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
+
 import java.awt.BorderLayout;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -41,6 +43,7 @@ import javax.swing.DefaultListModel;
 public class Warehouse implements Observer{
 
 	JFrame frame;
+	static Warehouse warehouse;
 	private JTree inventory;
 	private JPanel navigationBar;
 	private JButton[] naviButtons;
@@ -56,6 +59,7 @@ public class Warehouse implements Observer{
 			public void run() {
 				try {
 					Warehouse window = new Warehouse();
+					warehouse = window;
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -141,7 +145,7 @@ public class Warehouse implements Observer{
 		booking.setLocation(0,(root.getChildCount() + 1) * 30);
 		booking.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Buchen window = new Buchen();
+				Buchen window = new Buchen(warehouse);
 				window.frame.setVisible(true);
 			}
 		});
@@ -153,7 +157,7 @@ public class Warehouse implements Observer{
 		delivery_button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Deliverys window = new Deliverys();
-				Deliverys.frame.setVisible(true);
+				window.frame.setVisible(true);
 			}
 		});
 		navigationBar.add(delivery_button);
@@ -168,14 +172,44 @@ public class Warehouse implements Observer{
 			}
 		});
 		navigationBar.add(save_button);
+		
+		JButton Change_name_button = new JButton("Lagernamen ändern");
+		Change_name_button.setSize(197,30);
+		Change_name_button.setLocation(0,(root.getChildCount() + 4) * 30);
+		Change_name_button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg) {
+				changeLName();
+			}
+		});
+		navigationBar.add(Change_name_button);
 	}
 	
+	private void changeLName() 
+	{
+		Lager l = getLagerFromTree();
+		if(l == null)
+			return;
+		 String input = JOptionPane.showInputDialog("Wählen Sie einen neuen Namen:");
+		 
+		 for (int i = 0; i < lagerl.size(); i++) 
+		 {
+			 if(lagerl.get(i).getName().equals(input))
+			 {
+				 JOptionPane.showMessageDialog(frame,"Der Name ist bereits vergeben");
+				 return;
+			 }
+		 }
+		 l.setName(input);
+		 refresh();
+	}
+
 	public void refresh()
 	{		
+		refreshTreeNodes();
+		
 		inventory.setModel(null);
 		//m.sysoLagerstruktur(lagerl);
-		
-		
+
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Gesamtlager");
 		DefaultMutableTreeNode[] nodes = new DefaultMutableTreeNode[lagerl.size()];
 	
@@ -183,6 +217,7 @@ public class Warehouse implements Observer{
 		DefaultTreeModel model = new DefaultTreeModel(root);
 	
 		inventory.setModel(model);	
+		setTree(inventory);
 		generateTree(root, nodes);
 		
 
@@ -342,13 +377,12 @@ public class Warehouse implements Observer{
 		});
 	}
 	
+	/**
+	 * Hier wird verglichen welches Lager angeklickt wurde, mit den Lagern aus der History
+	*/
 	private void showTransactions(DefaultListModel<String> listenModell) {
 		
-		/**
-		 * Hier wird verglichen welches Lager angeklickt wurde, mit den Lagern aus der History
-		 * diese Methode eignet sich nur auf beschränkte Weise, da es bei gleichnamigen Lagern zu Problemen führt, 
-		 * diese jedoch hier nicht gegeben sind
-		*/
+
 		boolean allowed;
 		for (int i = 0; i < InstanceH.getInstance().getHistory().size(); i++) 
 		{
@@ -402,7 +436,9 @@ public class Warehouse implements Observer{
 	{	
 		//Hier wird neue Model für den Tree übergeben und gesetzt
 		inventory.setModel((DefaultTreeModel) arg1);
+	}
 
+	private void refreshTreeNodes() {
 		//Hier werden die neuen Pfade für die Navigationsbutton aktualisiert
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) inventory.getModel().getRoot();
 		DefaultMutableTreeNode node;
@@ -412,11 +448,13 @@ public class Warehouse implements Observer{
 			TreePath path = new TreePath(node.getPath());
 			treePath.set(i, path);
 		}
-
 	}
 	
 	private Lager getLagerFromTree() {
 
+		if(inventory.getLastSelectedPathComponent() == null)
+			return null;
+		
 		String index = inventory.getLastSelectedPathComponent().toString();
 		
 		for(Lager l : getLager())
