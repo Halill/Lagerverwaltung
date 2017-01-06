@@ -24,4 +24,10 @@ public class InstanceH {
 	}
 
 
+	public void addHistory(ArrayList<History> addhistory) 
+	{
+		history.addAll(addhistory);
+	}
+
+
 }

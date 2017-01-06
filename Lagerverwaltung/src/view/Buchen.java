@@ -306,7 +306,7 @@ public class Buchen extends Warehouse{
 					setInfoLabel("Es müssen alle Einheiten verbucht sein", Color.red);;
 					return;
 				}
-				InstanceH.getInstance().setHistory(history);
+				InstanceH.getInstance().addHistory(history);
 				ObserverTree.getInstance().setTreeModel((DefaultTreeModel) tree.getModel());
 				refresh();
 				frame.dispose();
