@@ -104,10 +104,6 @@ public class Buchung {
 	 * fügt ein Lager zu Buchungslagerliste hinzu und gleichzeitig wird die Buchung in der Liste der Buchungen eines Lager eingetragen.
 	 * @param lager Lager, dass hinzugefügt werden soll
 	 */
-	public void fuegeLagerzuBuchungHinzu(Lager lager){
-		this.buchunglagerliste.add(lager);
-		lager.addBuchung(this);
-	}
 	/**
 	 * Führt eine Zubuchung aus.
 	 * Geprüft wird, ob

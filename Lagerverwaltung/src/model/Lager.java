@@ -19,8 +19,6 @@ public class Lager{
 	private Lager elternlager;
 	/** Attribut Kindlager. Eine Liste, die die Lager unter diesem Lager enthält.*/
 	private ArrayList<Lager> kindlager = new ArrayList<Lager>();
-	/**Attribut Buchungsliste. Hier*/
-	private ArrayList<Buchung> buchungsliste = new ArrayList<Buchung>();
 	/**Attribut Lagerstatus.*/
 	private static int ROOTLAGER = 0, TREELAGER = 1, LEAFLAGER = 2; 
 	
@@ -250,11 +248,5 @@ public class Lager{
 			liste.add(elternlager);
 			durchlaufenElternlager(elternlager, liste);
 		}
-	}
-	public ArrayList<Buchung> getBuchungsliste() {
-		return buchungsliste;
-	}
-	public void addBuchung(Buchung buchung) {
-		this.buchungsliste.add(buchung);
 	}
 }		

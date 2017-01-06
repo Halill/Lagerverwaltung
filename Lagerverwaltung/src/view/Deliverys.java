@@ -9,7 +9,14 @@ import javax.swing.JList;
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JScrollPane;
+
+import model.History;
+import model.InstanceH;
+
 import java.awt.FlowLayout;
+import java.util.ArrayList;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 public class Deliverys {
 
@@ -71,11 +78,38 @@ public class Deliverys {
 		list_1.setModel(listenModell_1);
 		scrollPane_1.setViewportView(list_1);
 		
-		load_history();
+		list.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent arg) 
+			{
+				updateList(listenModell_1,list.getSelectedValue());
+			}
+		});
+		
+		load_history(listenModell);
 	}
 
-	private void load_history() 
-	{
+	private void updateList(DefaultListModel<String> listenModell_1, String lager) 
+	{		
+		listenModell_1.clear();
+		ArrayList<History> history = InstanceH.getInstance().getHistory();
 		
+		for (int i = 0; i < history.size(); i++)
+		{
+			if(history.get(i).isAllowed() && lager.equals(history.get(i).getLager().getName()))
+				listenModell_1.addElement(history.get(i).getTransaction());
+		}
+		
+	}
+
+	private void load_history(DefaultListModel<String> listenModell) 
+	{
+		listenModell.clear();
+		ArrayList<History> history = InstanceH.getInstance().getHistory();
+		
+		for (int i = 0; i < history.size(); i++)
+		{
+			if(history.get(i).isAllowed() && !listenModell.contains(history.get(i).getLager().getName()))
+				listenModell.addElement(history.get(i).getLager().getName());
+		}
 	}
 }
