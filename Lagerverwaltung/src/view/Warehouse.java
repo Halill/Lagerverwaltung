@@ -12,52 +12,30 @@ import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JTree;
-import javax.swing.ListModel;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 import javax.swing.UIManager;
 import javax.swing.JList;
 import java.awt.BorderLayout;
-import java.awt.ScrollPane;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import controller.File_Manager;
 import model.History;
 import model.InstanceH;
 import model.Lager;
 import model.Model;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.sql.Savepoint;
 
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 
 import javax.swing.DefaultListModel;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import net.miginfocom.swing.MigLayout;
-import java.awt.CardLayout;
-import java.awt.GridBagLayout;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import javax.swing.JTextPane;
-import javax.swing.AbstractListModel;
 
 public class Warehouse implements Observer{
 
@@ -286,6 +264,7 @@ public class Warehouse implements Observer{
 		frame.setBounds(100, 100, 859, 718);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+		frame.setResizable(false);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(0, 0, 197, 455);
@@ -302,12 +281,12 @@ public class Warehouse implements Observer{
 		JPanel panel_Border = new JPanel();
 		panel_Border.setBackground(SystemColor.inactiveCaptionBorder);
 		panel_Border.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Lager A1", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel_Border.setBounds(0, 454, 843, 226);
+		panel_Border.setBounds(0, 454, 853, 235);
 		frame.getContentPane().add(panel_Border);
 		panel_Border.setLayout(null);		
 			
 		JPanel panel = new JPanel();
-		panel.setBounds(6, 16, 833, 199);
+		panel.setBounds(6, 16, 842, 208);
 		panel_Border.add(panel);
 		panel.setBackground(SystemColor.inactiveCaptionBorder);
 		panel.setLayout(new BorderLayout(0, 0));
@@ -322,7 +301,7 @@ public class Warehouse implements Observer{
 		scrollPane2.setViewportView(list);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(196, 0, 647, 455);
+		scrollPane_1.setBounds(196, 0, 657, 455);
 		frame.getContentPane().add(scrollPane_1);
 		
 		inventory = new JTree();

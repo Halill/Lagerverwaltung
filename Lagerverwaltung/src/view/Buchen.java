@@ -19,39 +19,29 @@ import java.awt.SystemColor;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.text.Element;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
+
 import javax.swing.tree.TreePath;
 
 import controller.Book;
 import controller.CommandManager;
 import controller.ObserverTree;
-import model.Buchung;
 import model.History;
 import model.InstanceH;
 import model.Lager;
-import model.Model;
 
 import javax.swing.JTree;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.rmi.server.UnicastRemoteObject;
-import java.text.SimpleDateFormat;
-import java.awt.event.InputMethodListener;
-import java.awt.event.InputMethodEvent;
 
-import java.util.Observable;
+import java.text.SimpleDateFormat;
 
 public class Buchen extends Warehouse{
 
@@ -100,13 +90,14 @@ public class Buchen extends Warehouse{
 	private void initialize() {	
 		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 708, 464);
+		frame.setBounds(100, 100, 708, 453);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+		frame.setResizable(false);
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(SystemColor.inactiveCaptionBorder);
-		panel.setBounds(0, 0, 692, 164);
+		panel.setBounds(0, 0, 702, 164);
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 		
@@ -307,6 +298,11 @@ public class Buchen extends Warehouse{
 		Buchen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
+				if(!textField.getText().equals("0"))
+				{
+					setInfoLabel("Es müssen alle Einheiten verbucht sein", Color.red);;
+					return;
+				}
 				InstanceH.getInstance().setHistory(history);
 				ObserverTree.getInstance().setTreeModel((DefaultTreeModel) tree.getModel());
 				refresh();
@@ -329,7 +325,7 @@ public class Buchen extends Warehouse{
 //				refresh();
 			}
 		});
-		Buchen.setBounds(587, 387, 105, 38);
+		Buchen.setBounds(596, 386, 105, 38);
 		frame.getContentPane().add(Buchen);
 		
 		JButton btnVor = new JButton("Vor");
@@ -340,7 +336,7 @@ public class Buchen extends Warehouse{
 				}
 			}
 		});
-		btnVor.setBounds(484, 387, 105, 38);
+		btnVor.setBounds(493, 386, 105, 38);
 		frame.getContentPane().add(btnVor);
 		
 		JButton btnZurck = new JButton("Zur\u00FCck");
@@ -352,11 +348,11 @@ public class Buchen extends Warehouse{
 				}
 			}
 		});
-		btnZurck.setBounds(381, 387, 105, 38);
+		btnZurck.setBounds(390, 386, 105, 38);
 		frame.getContentPane().add(btnZurck);
 		
 		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(0, 164, 692, 224);
+		panel_1.setBounds(0, 164, 702, 224);
 		frame.getContentPane().add(panel_1);
 		panel_1.setLayout(new BorderLayout(0, 0));
 		
