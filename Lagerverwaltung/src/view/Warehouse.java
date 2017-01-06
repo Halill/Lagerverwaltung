@@ -32,6 +32,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import controller.File_Manager;
+import model.History;
 import model.InstanceH;
 import model.Lager;
 import model.Model;
@@ -65,9 +66,8 @@ public class Warehouse implements Observer{
 	private JPanel navigationBar;
 	private JButton[] naviButtons;
 	private Model m;
-	private ArrayList<Lager> lagerl = new ArrayList<>();
-
-
+	private ArrayList<Lager> lagerl = new ArrayList<Lager>();
+	private ArrayList<TreePath> treePath = new ArrayList<TreePath>();
 	/**
 	 * @author Markus
 	 * Launch the application.
@@ -264,11 +264,12 @@ public class Warehouse implements Observer{
 		naviButtons[i] = new JButton(name);
 		naviButtons[i].setSize(197,30);
 		naviButtons[i].setLocation(0,i * 30);	
+		treePath.add(path);
 		
 		naviButtons[i].addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				inventory.setSelectionPath(path);
-				inventory.expandPath(path);
+				inventory.setSelectionPath(treePath.get(i));
+				inventory.expandPath(treePath.get(i));
 
 			}
 		});
@@ -341,7 +342,7 @@ public class Warehouse implements Observer{
 	
 	private void showTransactions(DefaultListModel<String> listenModell) {
 		
-		/*
+		/**
 		 * Hier wird verglichen welches Lager angeklickt wurde, mit den Lagern aus der History
 		 * diese Methode eignet sich nur auf beschränkte Weise, da es bei gleichnamigen Lagern zu Problemen führt, 
 		 * diese jedoch hier nicht gegeben sind
@@ -356,16 +357,75 @@ public class Warehouse implements Observer{
 				listenModell.add(listenModell.getSize(), (InstanceH.getInstance().getHistory().get(i).getTransaction()));	
 
 		}
-		if(listenModell.size() == 0)
+		if(listenModell.size() == 0 && getLagerFromTree().getKindlager().size() == 0)
 			listenModell.add(0,"Es sind noch keine Transaktionen getätigt worden");
+		
+		else if(getLagerFromTree().getKindlager().size() > 0)
+			listenModell.addElement(getChildCapacity());
+		
+	}
+
+	private String getChildCapacity() 
+	{
+		String capacity = "";
+		refreshLager();
+		int count = getLagerFromTree().durchlaufenBestand();
+		capacity = "Der Bestand der alle Unterlager liegt bei " + count + " Einheiten";
+		return capacity;
+		
+	}
+
+	private void refreshLager() 
+	{
+		ArrayList<History> history = InstanceH.getInstance().getHistory();
+		String first = "",second = "";
+		for (int i = 0; i < history.size(); i++) 
+		{
+			first = history.get(i).getLager().getName().split("\\(")[0];
+			for (int j = 0; j < getLager().size(); j++) 
+			{
+				second = getLager().get(j).getName().split("\\(")[0];
+				if(first.equals(second))
+				{				
+					getLager().get(j).setBestand(history.get(i).getLager().getBestand());
+					break;
+				}
+			}
+		}
 		
 	}
 
 	@Override
 	public void update(Observable arg0, Object arg1) 
-	{		
-		System.out.println("Test");
+	{	
+		//Hier wird neue Model für den Tree übergeben und gesetzt
 		inventory.setModel((DefaultTreeModel) arg1);
 
+		//Hier werden die neuen Pfade für die Navigationsbutton aktualisiert
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode) inventory.getModel().getRoot();
+		DefaultMutableTreeNode node;
+		
+		for (int i = 0; i < root.getChildCount(); i++) {
+			node = (DefaultMutableTreeNode) root.getChildAt(i);
+			TreePath path = new TreePath(node.getPath());
+			treePath.set(i, path);
+		}
+
+	}
+	
+	private Lager getLagerFromTree() {
+
+		String index = inventory.getLastSelectedPathComponent().toString();
+		
+		for(Lager l : getLager())
+		{
+			if(index.contains(l.getName()))
+			{
+				System.out.println(l.getName());
+				return l;
+			}
+		}
+		return null;
+		
 	}
 }

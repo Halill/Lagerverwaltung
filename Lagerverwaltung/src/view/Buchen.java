@@ -309,7 +309,6 @@ public class Buchen extends Warehouse{
 			{
 				InstanceH.getInstance().setHistory(history);
 				ObserverTree.getInstance().setTreeModel((DefaultTreeModel) tree.getModel());
-				
 				refresh();
 				frame.dispose();
 //				Buchung buchen = new Buchung();
@@ -433,7 +432,7 @@ public class Buchen extends Warehouse{
 		
 		if(l == null || units_left <= 0)
 		{	
-			setInfoLabel("Kein Lager ausgewählt", Color.red);
+			setInfoLabel("Kein Lager ausgewählt oder keine Einheiten zu verteilen", Color.red);
 			return;
 		}
 		freeUnits =  l.getKapazitaet() - l.getBestand();
@@ -482,7 +481,7 @@ public class Buchen extends Warehouse{
 		}
 				
 		textField.setText(units_left + "");
-		l.setBestand(l.getBestand() + b.getMenge());
+		//Menge wird hier auf die Lager gebucht
 		b.execute(l);
 		commands.add(b);
 		last_command = b;
@@ -560,7 +559,6 @@ public class Buchen extends Warehouse{
 		
 		
 		textField.setText(units_left + "");
-		l.setBestand(l.getBestand() + b.getMenge());
 		b.execute(l);
 		commands.add(b);
 		last_command = b;
@@ -660,7 +658,7 @@ public class Buchen extends Warehouse{
 			textField.setText(units + "");
 			
 			
-			commands.get(i).getLager().setBestand(commands.get(i).getLager().getBestand() - commands.get(i).getMenge() * 3);
+			commands.get(i).getLager().setBestand(commands.get(i).getLager().getBestand() - commands.get(i).getMenge() * 2);
 			
 			if (history.get(i).getLager().getKindlager().size() == 0)
 			{
@@ -688,7 +686,7 @@ public class Buchen extends Warehouse{
 			units -= commands.get(i).getUnits();
 			textField.setText(units + "");
 			
-			commands.get(i).getLager().setBestand(commands.get(i).getLager().getBestand() + commands.get(i).getMenge() * 3);
+			commands.get(i).getLager().setBestand(commands.get(i).getLager().getBestand() + commands.get(i).getMenge() * 2);
 			
 			if (history.get(i).getLager().getKindlager().size() == 0)
 			{
