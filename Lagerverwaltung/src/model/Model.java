@@ -12,7 +12,6 @@ public class Model{
 	/**Liste aller Lager, die in der Lagerstruktur enthalten sind.*/
 	private ArrayList<Lager> lagerliste = new ArrayList<Lager>();
 	/**Liste aller Buchungen, die je mit der Anwendung erstellt worden sind. */
-	private ArrayList<Buchung> buchungliste = new ArrayList<Buchung>();
 	/**
 	 * Die zentrale Methode, mit der neue Lager angelegt werden. 
 	 * Zunächst werden nur Name, Kapazität und Bestand festgelegt. Die Beziehungen zwischen den Lagern entsteht erst im nachhinein.
@@ -274,61 +273,7 @@ public class Model{
 		if(addiereRestLagerBestand(lagerliste)<=menge) return false;
 		else return true;
 	}
-	/**
-	 * Erstellt eine neue Buchung. Zunächst wird hier nur die Menge festgelegt.
-	 * Da die Auswahl der Lager dynamisch im Fenster der View generiert werden, werden hier noch keine Lager eingegeben. Das Datum einer Buchung wird aus bei der Methode
-	 * {@link Model#fuehreBuchungenaus()} gesetzt, da dann die tatsächliche Buchung stattfindet.
-	 * Der Buchungsschlüssel und der Buchungstyp werden auch erst im Fenster festgelegt.
-	 * @param menge Menge einer Buchung
-	 * @return gibt eine neues Buchungs-Objekt aus
-	 */
-	public Buchung neueBuchung(int menge){
-		Buchung buchung = new Buchung();
-		if(pruefeBuchungsmenge(menge)) buchung.setMenge(menge);
-		buchungliste.add(buchung);
-		return buchung;
-	}
-	/**
-	 * Gibt die Gesamtbuchungsliste wieder
-	 * @return Gesamtbuchungsliste der Model-Klasse
-	 */
-	public ArrayList<Buchung> getBuchungliste() {
-		return buchungliste;
-	}
-	/**
-	 * Setter-Methode zur Gesamtbuchungsliste.
-	 * @param buchungliste Buchungsliste, die die aktuelle Buchungsliste überschreibt
-	 */
-	public void setBuchungliste(ArrayList<Buchung> buchungliste) {
-		this.buchungliste = buchungliste;
-	}
-	/**
-	 * System.out.println() einer Buchungsliste
-	 * @param buchungliste hier wird hauptsächlich die Gesamtbuchungsliste verwendet, oder die spezifischen Buchungslisten der Lager
-	 */
-	public void sysoBuchungsliste(ArrayList<Buchung> buchungliste){
-		for(Buchung b : buchungliste){
-			System.out.println("Buchungstyp: " + b.getBuchungstyp());
-			System.out.println("Buchungsmenge: " + b.getMenge());
-			System.out.println("Buchungsdatum: " + b.getDatum());
-		}
-	}
-	/**
-	 * Diese Methode führt die Buchungen aus. Hier wird das Buchungsdatum und die Buchungszeit gesetzt.
-	 * Hier wird unterschieden, ob es sich um eine Zubuchung oder um eine Abbuchung handelt.
-	 */
-	public void fuehreBuchungenaus(){
-		for(Buchung b : buchungliste){
-			if(pruefeBuchungsmenge(b.getMenge()) && b.getBuchungstyp()=="Zubuchung"){
-				b.zubuchen();
-				b.setDatum();
-			}
-			if(pruefeBuchungsmenge(b.getMenge()) && b.getBuchungstyp()=="Abbuchung"){
-				b.abbuchen();
-				b.setDatum();
-			}
-		}
-	}
+
 	
 
 }

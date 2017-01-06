@@ -1,6 +1,5 @@
 package view;
 
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -45,7 +44,7 @@ import java.text.SimpleDateFormat;
 
 public class Buchen extends Warehouse{
 
-	JFrame frame;
+	public JFrame frame;
 	Warehouse warehouse;
 	private JTextField textField;
 	private int percent_Step = 5;

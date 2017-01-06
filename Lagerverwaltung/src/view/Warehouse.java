@@ -27,6 +27,7 @@ import java.awt.BorderLayout;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import controller.Controller;
 import controller.File_Manager;
 import model.History;
 import model.InstanceH;
@@ -42,7 +43,7 @@ import javax.swing.DefaultListModel;
 
 public class Warehouse implements Observer{
 
-	JFrame frame;
+	public JFrame frame;
 	static Warehouse warehouse;
 	private JTree inventory;
 	private JPanel navigationBar;
@@ -50,23 +51,24 @@ public class Warehouse implements Observer{
 	private Model m;
 	private ArrayList<Lager> lagerl = new ArrayList<Lager>();
 	private ArrayList<TreePath> treePath = new ArrayList<TreePath>();
-	/**
-	 * @author Markus
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Warehouse window = new Warehouse();
-					warehouse = window;
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
+//	/**
+//	 * @author Markus
+//	 * Launch the application.
+//	 */
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					Warehouse window = new Warehouse();
+//					warehouse = window;
+//					window.frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the application.
@@ -144,9 +146,9 @@ public class Warehouse implements Observer{
 		booking.setSize(197,30);
 		booking.setLocation(0,(root.getChildCount() + 1) * 30);
 		booking.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				Buchen window = new Buchen(warehouse);
-				window.frame.setVisible(true);
+			public void actionPerformed(ActionEvent arg0) {				
+				Controller.getInstance().openBuchen();
+
 			}
 		});
 		navigationBar.add(booking);
@@ -395,6 +397,8 @@ public class Warehouse implements Observer{
 	*/
 	private void showTransactions(DefaultListModel<String> listenModell) {
 		
+		if(getLagerFromTree() == null)
+			return;
 
 		boolean allowed;
 		for (int i = 0; i < InstanceH.getInstance().getHistory().size(); i++) 

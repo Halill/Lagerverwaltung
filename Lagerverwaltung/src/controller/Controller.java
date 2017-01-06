@@ -3,28 +3,67 @@ package controller;
 
 import java.util.ArrayList;
 
-import model.Buchung;
+import model.InstanceH;
 import model.Lager;
 import model.Model;
+import view.Buchen;
+import view.Warehouse;
+import view.Welcome;
 
 public class Controller {
 
+	
+	private static Controller instance = new Controller();
+	Warehouse warehouse;
+	
 	public static void main(String[] arg0){
-		Model m = new Model();
+//		Model m = new Model();
 
 
 		
 		//hier wird die Lagerstruktur generiert
-		m.legeInitialeStrukturFest();
-		File_Manager filemanager = new File_Manager();
-		ArrayList<Lager> lagerliste = filemanager.load_inventory();
+//		m.legeInitialeStrukturFest();
+//		File_Manager filemanager = new File_Manager();
+//		ArrayList<Lager> lagerliste = filemanager.load_inventory();
+//
+//		File_Manager filemanager1 = new File_Manager();
+//		ArrayList<Lager> lagerliste1 = filemanager1.load_inventory();
+//		m.setLagerliste(lagerliste1);
+//
+//		m.sysoLagerstruktur(lagerliste1);
+		
+		Welcome welcome = new Welcome();
+		welcome.frame.setVisible(true);
 
-		File_Manager filemanager1 = new File_Manager();
-		ArrayList<Lager> lagerliste1 = filemanager1.load_inventory();
-		m.setLagerliste(lagerliste1);
+	}
+	
+	public void openWarehouse()
+	{
+		warehouse = new Warehouse();
+		warehouse.frame.setVisible(true);		
+		ObserverTree.getInstance().addObserver(warehouse);
+	}
+	
+	public void openWarehouse(ArrayList<Lager> lager)
+	{
+		warehouse = new Warehouse(lager);
+		warehouse.frame.setVisible(true);		
+		ObserverTree.getInstance().addObserver(warehouse);
+	}
+	
+	public void openBuchen()
+	{
+		Buchen window = new Buchen(warehouse);
+		window.frame.setVisible(true);		
+		ObserverTree.getInstance().addObserver(window);
+	}
 
-		m.sysoLagerstruktur(lagerliste1);
+	public static Controller getInstance() {
+		return instance;
+	}
 
+	public static void setInstance(Controller instance) {
+		Controller.instance = instance;
 	}
 
 }	

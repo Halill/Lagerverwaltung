@@ -15,6 +15,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 
+import controller.Controller;
 import controller.File_Manager;
 import controller.ObserverTree;
 import model.Lager;
@@ -34,23 +35,23 @@ import java.awt.event.ActionEvent;
 
 public class Welcome {
 
-	private JFrame frame;
+	public JFrame frame;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Welcome window = new Welcome();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					Welcome window = new Welcome();
+//					window.frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the application.
@@ -76,9 +77,7 @@ public class Welcome {
 		JButton new_inventory = new JButton("Neues Lager");
 		new_inventory.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {				
-				Warehouse window = new Warehouse();
-				window.frame.setVisible(true);		
-				ObserverTree.getInstance().addObserver(window);
+				Controller.getInstance().openWarehouse();
 				frame.dispose();
 			}
 		});
@@ -93,11 +92,7 @@ public class Welcome {
 				ArrayList<Lager> lager = file.load_inventory();
 				if(lager == null)
 					return;
-				Warehouse window = new Warehouse();
-				window.frame.setVisible(true);
-				window.getModel().setLagerliste(lager);
-				window.setLager(lager);
-				window.refresh();
+				Controller.getInstance().openWarehouse(lager);
 				frame.dispose();
 			}
 		});
