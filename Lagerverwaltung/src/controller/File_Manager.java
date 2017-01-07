@@ -16,10 +16,23 @@ import javax.swing.JFileChooser;
 
 import model.Lager;
 import model.Model;
-
-public class File_Manager
-{
-	
+/**
+ * Die Klasse File_Manager dient dazu das Speichern und Laden der Lagerstruktur zu ermöglichen.
+ * @author Halil
+ *
+ */
+public class File_Manager{
+	/**
+	 * Methode, die die vorhandene Lagerstruktur in eine .txt Datei unter dem Ordner "Resources" speichert. Der Dateiname ist "save" + die aktuelle Uhrzeit und das aktuelle Datum.<br>
+	 * Gespeichert werden von dem jeweiligen Lager:<br>
+	 * - Name<br>
+	 * - Kapazität<br>
+	 * - Bestand<br>
+	 * - Lagerstatus<br>
+	 * - Elternlager<br>
+	 * - Kindlager<br>
+	 * @param lagerliste Hier wird die zu speichernde Lagerliste übergeben.
+	 */
 	public void save_inventory(ArrayList<Lager> lagerliste)
 	{
 		Date date = new Date();
@@ -56,7 +69,11 @@ public class File_Manager
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * Hilfsmethode zum erlangen der Elternlager als String
+	 * @param lager Das Lager, von dem das Elternlager herausgefunden werden soll
+	 * @return Gibt den Namen des Elternlagers aus
+	 */
 	public String getEltern(Lager lager) {
 		
 		String eltern = ""; 
@@ -66,7 +83,11 @@ public class File_Manager
 			eltern = "kein Elternlager vorhanden";
 		return eltern;
 	}
-	
+	/**
+	 * Hilfsmethode zum erlangen der Kndlager als String
+	 * @param kindlager die Arraylist, mit den jeweiligen Kindlager
+	 * @return gibt einen String mit allen Kindlagern eines Lagers im Format Kindlager, Kindlager ...
+	 */
 	private String getKinder(ArrayList<Lager> kindlager) {
 		
 		String kinder = ""; 
@@ -84,7 +105,11 @@ public class File_Manager
 		}
 		return kinder;
 	}
-
+	/**
+	 *  Methode, die aus einer Textdatei, die richtig formatiert ist, eine Lagerliste erzeugt.
+	 *  Es werden alle Attribute eines Lagers und für jede Zeile ein neues Lager-Objekt erzeugt.
+	 * @return gibt die geladene ArrayList aus
+	 */
 	public ArrayList<Lager> load_inventory()
 	{
 		File file = new File(System.getProperty("user.dir") + "\\Resources");
@@ -134,12 +159,10 @@ public class File_Manager
 	    		for(Lager ll : hilfsliste){
 	    			if(elternlagerl.equals(ll.getName())){
 	    				ll.setKindlager(l);
-	    			}
-	    				
+	    			}			
 	    		}
 	    		i++;
-	    	}  
-		    
+	    	}  		    
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -147,11 +170,6 @@ public class File_Manager
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-
-
-	    
-		
 		return lagerliste;
 	}
 

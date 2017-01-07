@@ -1,0 +1,21 @@
+Germany/55000/14300/Rootlager/kein Elternlager vorhanden/Niedersachsen,NRW,Bremen,Hessen,Sachsen,Brandenburg,MV
+Niedersachsen/1500/800/Treelager/Germany/Nienburg,Hannover-Misburg
+Nienburg/500/301/Leaflager/Niedersachsen/keine Kindlager vorhanden
+Hannover-Misburg/1000/500/Leaflager/Niedersachsen/keine Kindlager vorhanden
+NRW/25000/5000/Leaflager/Germany/keine Kindlager vorhanden
+Bremen/2000/0/Leaflager/Germany/keine Kindlager vorhanden
+Hessen/12500/5000/Leaflager/Germany/keine Kindlager vorhanden
+Sachsen/5000/1000/Leaflager/Germany/keine Kindlager vorhanden
+Brandenburg/6000/2000/Leaflager/Germany/keine Kindlager vorhanden
+MV/3000/500/Leaflager/Germany/keine Kindlager vorhanden
+Europa/35000/31500/Rootlager/kein Elternlager vorhanden/Frankreich,Italien,Spanien
+Frankreich/20000/18000/Treelager/Europa/Paris-Nord,Orleans,Marseille,Nimes
+Paris-Nord/5000/4500/Leaflager/Frankreich/keine Kindlager vorhanden
+Orleans/5000/4500/Leaflager/Frankreich/keine Kindlager vorhanden
+Marseille/5000/4500/Leaflager/Frankreich/keine Kindlager vorhanden
+Nimes/5000/4500/Leaflager/Frankreich/keine Kindlager vorhanden
+Italien/10000/9000/Treelager/Europa/Mailand,L'Aquila
+Mailand/5000/4500/Leaflager/Italien/keine Kindlager vorhanden
+L'Aquila/5000/4500/Leaflager/Italien/keine Kindlager vorhanden
+Spanien/5000/4500/Leaflager/Europa/keine Kindlager vorhanden
+Großbritannien/5000/4500/Rootlager/kein Elternlager vorhanden/keine Kindlager vorhanden

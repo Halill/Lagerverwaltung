@@ -1,6 +1,5 @@
 package view;
 
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -16,20 +15,22 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
-
+/**
+ * Das Fenster Welcome dient als Eingangsfenster in die Anwendung. Man kann entweder eine neue Lagerstruktur generieren <br>
+ * oder eine vorhandene aus einer txt Datei lesen. Bei beiden Wegen wird als nächstes das Fenster Warehouse angezeigt.
+ */
 public class Welcome {
 
 	public JFrame frame;
 
 	/**
-	 * Create the application.
+	 * Konstruktor für das Fenster Welcome.
 	 */
 	public Welcome() {
 		initialize();
 	}
-
 	/**
-	 * Initialize the contents of the frame.
+	 * initialisiert die Inhalte des Fenster Welcome.
 	 */
 	private void initialize() {
 		frame = new JFrame();

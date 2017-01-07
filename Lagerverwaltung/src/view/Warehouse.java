@@ -38,7 +38,12 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 
 import javax.swing.DefaultListModel;
-
+/**
+ * Das zentrale Fenster Warehouse, dient zur Anzeige der Lagerstruktur. Es kann hier ein Lagername geändert werden, der Sprung zum Fenster Delivery und
+ * der Sprung zum Fenster Buchen sind hier möglich. Des Weiteren kann hier die Lagerstruktur in eine txt-Datei gespeichert werden, die unter /Resources gefunden wird.
+ * @author Halil
+ *
+ */
 public class Warehouse implements Observer{
 
 	public JFrame frame;
@@ -50,26 +55,9 @@ public class Warehouse implements Observer{
 	private ArrayList<Lager> lagerl = new ArrayList<Lager>();
 	private ArrayList<TreePath> treePath = new ArrayList<TreePath>();
 	
-//	/**
-//	 * @author Markus
-//	 * Launch the application.
-//	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					Warehouse window = new Warehouse();
-//					warehouse = window;
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
-
 	/**
-	 * Create the application.
+	 * Konstruktor für das Fenster Warehouse, nachdem die Lagerstruktur verändert oder aus einer Datei geladen wird.
+	 * @param lagerliste für die eine Lagerstruktur generiert werden soll
 	 */
 	public Warehouse(ArrayList<Lager> lagerliste) 
 	{
@@ -77,39 +65,63 @@ public class Warehouse implements Observer{
 		initialize();
 		load_Inventory();
 	}
+	/**
+	 * Konstruktor für das Fenster Warehouse, beim erstmaligem Aufruf.
+	 */
 	public Warehouse() 
 	{
 		initialize();
 		load_Inventory();
 	}
-	
+	/**
+	 * Setter-Methode für das Attribut m.
+	 * @param model Model das, dass Attribut m ersetzen soll.
+	 */
 	public void setModel(Model model)
 	{
 		m = model;
 	}
+	/**
+	 * Getter-Methode für das Attribut m.
+	 * @return gibt das Attribut m zurück.
+	 */
 	public Model getModel()
 	{
 		return m;
 	}
-	
-	public void setTree(JTree tree)
-	{
+	/**
+	 * Setter-Methode für das Attribut inventory.
+	 * @param tree Jtree, der den aktuellen Jtree ersetzen soll.
+	 */
+	public void setTree(JTree tree){
 		inventory = tree;
 	}
+	/**
+	 * Getter-Methode für das Attribut inventory.
+	 * @return gibt das Attribut inventory zurück.
+	 */
 	public JTree getTree()
 	{
 		return inventory;
 	}
-	
+	/**
+	 * Setter-Methode für das Attribut lagerl
+	 * @param lager ArrayList, der die aktuelle lagerl überschreibt
+	 */
 	public void setLager(ArrayList<Lager> lager)
 	{
 		lagerl = lager;
 	}
-	public ArrayList<Lager> getLager()
-	{
+	/**
+	 * Getter-Methode für das Attribut lagerl
+	 * @return gibt das Attribut lagerl zurück.
+	 */
+	public ArrayList<Lager> getLager(){
 		return lagerl;
 	}
-	
+	/**
+	 * Methode, die aus dem Attribut lagerl einen 
+	 */
 	private void load_Inventory() 
 	{		
 		if (lagerl.size() == 0) 
@@ -182,7 +194,9 @@ public class Warehouse implements Observer{
 		});
 		navigationBar.add(Change_name_button);
 	}
-	
+	/**
+	 * Methode, die ermöglicht, dass Lagernamen geändert werden können. Wird mit dem Button "Lagernamen ändern" und Auswahl eines Lagers aufgerufen.
+	 */
 	private void changeLName() 
 	{
 		Lager l = getLagerFromTree();
@@ -213,18 +227,17 @@ public class Warehouse implements Observer{
 		 l.setName(input);
 		 refresh();
 	}
-
+	/**
+	 * Methode, die den Jtree aktualisiert.
+	 */
 	public void refresh()
 	{		
-
-		
 		inventory.setModel(null);
 		//m.sysoLagerstruktur(lagerl);
 
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Gesamtlager");
 		DefaultMutableTreeNode[] nodes = new DefaultMutableTreeNode[lagerl.size()];
 	
-		
 		DefaultTreeModel model = new DefaultTreeModel(root);
 	
 		inventory.setModel(model);	
@@ -233,7 +246,11 @@ public class Warehouse implements Observer{
 		
 		refreshTreeNodes();
 	}
-
+	/**
+	 * Methode, die aus dem Attribut lagerl einen Tree erzeugt.
+	 * @param root Rootknoten
+	 * @param nodes Knoten unterhalb des Rootknoten
+	 */
 	public void generateTree(DefaultMutableTreeNode root, DefaultMutableTreeNode[] nodes) {
 		DefaultMutableTreeNode node;
 		for(int i = 0; i < lagerl.size();i++)
@@ -282,7 +299,12 @@ public class Warehouse implements Observer{
 			}	
 		}
 	}
-	
+	/**
+	 * Methode, um einen bestimmten Knoten im Tree zu finden.
+	 * @param root Rootknoten des Trees.
+	 * @param s String, nach dem gesucht werden soll
+	 * @return gibt den gesuchten Knoten aus
+	 */
 	private DefaultMutableTreeNode findNode(DefaultMutableTreeNode root, String s) {
 	    @SuppressWarnings("unchecked")
 	    Enumeration<DefaultMutableTreeNode> e = root.depthFirstEnumeration();
@@ -295,13 +317,22 @@ public class Warehouse implements Observer{
 	    }
 	    return null;
 	}	
-
+	/**
+	 * Lager, die keine Kindlager besitzen, erhalten im JTree zusätzlich die Anzeige der Kapazität und des Bestands.
+	 * @param node Knoten, an dem das Lager sitzt
+	 * @param lager Lager, dass die Kapazität und den Bestand verwaltet
+	 * @return gibt den Knoten zurück
+	 */
 	public DefaultMutableTreeNode addInfo(DefaultMutableTreeNode node, Lager lager) 
 	{
 		node = new DefaultMutableTreeNode(lager.getName() + " (Kapazitaet: " + lager.getKapazitaet() + " Bestand: " + lager.getBestand() + ")");
 		return node;
 	}
-
+	/**
+	 * Methode, die die Rootlager links an die Seite per Button schneller verfügbar machen.
+	 * @param i Stelle des Rootlagers.
+	 * @param root Knoten, der einen Button bekommt.
+	 */
 	private void createIButton(int i, DefaultMutableTreeNode root) 
 	{
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) root.getChildAt(i);
@@ -324,9 +355,8 @@ public class Warehouse implements Observer{
 		navigationBar.add(naviButtons[i]);
 		
 	}
-
 	/**
-	 * Initialize the contents of the frame.
+	 * initialisert die Inhalte des Fensters Warehouse.
 	 */
 	private void initialize() {
 		frame = new JFrame();
@@ -388,10 +418,10 @@ public class Warehouse implements Observer{
 			}
 		});
 	}
-	
 	/**
 	 * Hier wird verglichen welches Lager angeklickt wurde, mit den Lagern aus der History
-	*/
+	 * @param listenModell Liste der Buchungen auf ein Lager
+	 */
 	private void showTransactions(DefaultListModel<String> listenModell) {
 		
 		if(getLagerFromTree() == null)
@@ -414,7 +444,10 @@ public class Warehouse implements Observer{
 			listenModell.addElement(getChildCapacity());
 		
 	}
-
+	/**
+	 * Methode, die den Bestand aller Kindlager addiert.
+	 * @return gibt einen Ausgabestring zurück, der den summierten Bestand beinhaltet.
+	 */
 	private String getChildCapacity() 
 	{
 		String capacity = "";
@@ -424,7 +457,9 @@ public class Warehouse implements Observer{
 		return capacity;
 		
 	}
-
+	/**
+	 * aktualisiert das Lager-Objekt in einem Knoten, damit der richtige Bestand angezeigt wird.
+	 */
 	private void refreshLager() 
 	{
 		ArrayList<History> history = InstanceH.getInstance().getHistory();
@@ -444,16 +479,20 @@ public class Warehouse implements Observer{
 		}
 		
 	}
-
+	/**
+	 * Hier wird neue Model für den Tree übergeben und gesetzt
+	 */
 	@Override
 	public void update(Observable arg0, Object arg1) 
 	{	
-		//Hier wird neue Model für den Tree übergeben und gesetzt
+
 		inventory.setModel((DefaultTreeModel) arg1);
 	}
-
+	/**
+	 * 	Hier werden die neuen Pfade für die Navigationsbutton aktualisiert
+	 */
 	private void refreshTreeNodes() {
-		//Hier werden die neuen Pfade für die Navigationsbutton aktualisiert
+
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) inventory.getModel().getRoot();
 		DefaultMutableTreeNode node;
 		
@@ -463,7 +502,10 @@ public class Warehouse implements Observer{
 			treePath.set(i, path);
 		}
 	}
-	
+	/**
+	 * Methode, die aus einem Knoten ein Lager ausliest.
+	 * @return gibt das gewünschte Lager aus
+	 */
 	private Lager getLagerFromTree() {
 
 		if(inventory.getLastSelectedPathComponent() == null)

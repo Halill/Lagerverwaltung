@@ -14,21 +14,22 @@ import model.InstanceH;
 import java.util.ArrayList;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
-
+/**
+ * Das Fenster Deliverys zeigt alle vorhandenen Buchungen an. Oben stehen alle Lager, auf die gebucht wurde. Klickt man auf ein Lager erscheinen im
+ * <br> unteren Teil die zugehörigen Buchungen.
+ */
 public class Deliverys {
 
 	public JFrame frame;
 
-
 	/**
-	 * Create the application.
+	 *  Konstruktor für das Fenster Delivery.
 	 */
 	public Deliverys() {
 		initialize();
 	}
-
 	/**
-	 * Initialize the contents of the frame.
+	 * initialisiert die Inhalte des Fenster Delivery.
 	 */
 	private void initialize() {
 		frame = new JFrame();
@@ -55,7 +56,7 @@ public class Deliverys {
 		
 		JList<String> list_1 = new JList<String>();
 		DefaultListModel<String> listenModell_1 = new DefaultListModel<String>();
-		listenModell_1.add(0, "Klicken Sie auf eine Lieferung im die Detail zu erfahren");
+		listenModell_1.add(0, "Klicken Sie auf eine Lieferung, um die Details zu erfahren");
 		list_1.setModel(listenModell_1);
 		scrollPane_1.setViewportView(list_1);
 		
@@ -68,7 +69,11 @@ public class Deliverys {
 		
 		load_history(listenModell);
 	}
-
+	/**
+	 * hier werden Lager in das Fenster geladen, bei denen Transaktionen durchgeführt wurde.
+	 * @param listenModell_1  hier wird die Liste der Buchungen gespeichert
+	 * @param lager Lager, das angeklickt wurde
+	 */
 	private void updateList(DefaultListModel<String> listenModell_1, String lager) 
 	{		
 		listenModell_1.clear();
@@ -81,7 +86,10 @@ public class Deliverys {
 		}
 		
 	}
-
+	/**
+	 * hier werden die einzelnen Histories erzeugt. Drückt man im oberen Teil des Fenster auf ein Lager, so wird die jeweilige History angezeigt.
+	 * @param listenModell hier wird die Liste der Buchungen gespeichert.
+	 */
 	private void load_history(DefaultListModel<String> listenModell) 
 	{
 		listenModell.clear();

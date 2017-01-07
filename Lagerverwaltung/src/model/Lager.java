@@ -1,12 +1,11 @@
 package model;
+
+import java.util.ArrayList;
 /**
  * Die Klasse Lager im Package Model.
  * 
  * In dieser Klasse sind Methoden enthalten, die die Lager-Attribute verändern und ausgeben können.
- * @author Halil
  */
-import java.util.ArrayList;
-
 public class Lager{
 	
 	/** Attribut Name*/
@@ -53,7 +52,7 @@ public class Lager{
 	}
 	/**
 	 * 
-	 * Methode zum ausgeben des Lagerstatus. Kann erst nachdem die Methode @see {@link Lager#setLagerStatus()} ausgeführt werden, da beim Anlegen dieser Wert noch nicht gesetzt wurde.
+	 * Methode zum ausgeben des Lagerstatus. Kann erst nachdem die Methode {@link Lager#setLagerStatus()} ausgeführt werden, da beim Anlegen dieser Wert noch nicht gesetzt wurde.
 	 * 
 	 * @return gibt den aktuellen Lagerstatus als String aus. Falls das Lager keine der drei Status besitzt, wird die 5 ausgegeben, damit man Fehler erkennt.
 	 */
@@ -70,9 +69,9 @@ public class Lager{
 		return "5";
 	}	
 	/**
-	 * Methode zum ausgeben des Lagernamens. Kann erst nachdem die Methode @see {@link Lager#setName(String)} oder @see {@link Model#lagerAnlegen(String, int, int)} fehlerfrei
+	 * Methode zum ausgeben des Lagernamens. Kann erst nachdem die Methode {@link Lager#setName(String)} oder {@link Model#lagerAnlegen(String, int, int)} fehlerfrei
 	 * ausgeführt werden, da sonst der Lagername noch nicht gesetzt wurde.
-	 * Diese Methode wird hauptsächlich in der Methode @see {@link Model#sysoLagerstruktur(ArrayList)} verwendet.
+	 * Diese Methode wird hauptsächlich in der Methode {@link Model#sysoLagerstruktur(ArrayList)} verwendet.
 	 * @return gibt den Lagernamen als String aus.
 	 */
 	public String getName() {
@@ -81,7 +80,7 @@ public class Lager{
 	/**
 	 * 
 	 * 
-	 * Methode zum setzen des Lagernamens. Wird hauptsächlich in der Methode @see {@link Model#lagerAnlegen(String, int, int)} verwendet.
+	 * Methode zum setzen des Lagernamens. Wird hauptsächlich in der Methode {@link Model#lagerAnlegen(String, int, int)} verwendet.
 	 * @param name der Name eines Lagers wird per String gesetzt.
 	 * 
 	 */
@@ -90,9 +89,9 @@ public class Lager{
 	}
 	/**
 	 * 
-	 * Methode zum ausgeben der Lagerkapazität. Kann erst nachdem die Methode @see {@link Lager#setKapazitaet(int)} oder @see {@link Model#lagerAnlegen(String, int, int)} fehlerfrei
+	 * Methode zum ausgeben der Lagerkapazität. Kann erst nachdem die Methode {@link Lager#setKapazitaet(int)} oder {@link Model#lagerAnlegen(String, int, int)} fehlerfrei
 	 * ausgeführt werden, da sonst die Lagerkapazität noch nicht gesetzt wurde.
-	 * Diese Methode wird hauptsächlich in der Methode @see {@link Model#sysoLagerstruktur(ArrayList)} verwendet.
+	 * Diese Methode wird hauptsächlich in der Methode {@link Model#sysoLagerstruktur(ArrayList)} verwendet.
 	 * @return gibt die Lagerkapazität als int aus.
 	 */
 	public int getKapazitaet() {
@@ -100,7 +99,7 @@ public class Lager{
 	}
 	/**
 	 * 
-	 * Methode zum setzen der Lagerkapazität. Wird hauptsächlich in der Methode @see {@link Model#lagerAnlegen(String, int, int)} verwendet.
+	 * Methode zum setzen der Lagerkapazität. Wird hauptsächlich in der Methode {@link Model#lagerAnlegen(String, int, int)} verwendet.
 	 * @param kapazitaet die Kapazität eines Lagers wird per int gesetzt.
 	 */
 	public void setKapazitaet(int kapazitaet) {
@@ -108,7 +107,7 @@ public class Lager{
 	}
 	/**
 	 *
-	 * Methode zum ausgeben des Lagerbestands. Kann erst nachdem die Methode @see {@link Lager#setBestand(int)} oder @see {@link Model#lagerAnlegen(String, int, int)} fehlerfrei
+	 * Methode zum ausgeben des Lagerbestands. Kann erst nachdem die Methode {@link Lager#setBestand(int)} oder @see {@link Model#lagerAnlegen(String, int, int)} fehlerfrei
 	 * ausgeführt werden, da sonst der Lagerbestand noch nicht gesetzt wurde.
 	 * @return gibt den Lagerbestand als int aus.
 	 */
@@ -117,7 +116,7 @@ public class Lager{
 	}
 	/**
 	 *
-	 * Methode zum setzen des Lagerbestands. Wird hauptsächlich in der Methode @see {@link Model#lagerAnlegen(String, int, int)} verwendet.
+	 * Methode zum setzen des Lagerbestands. Wird hauptsächlich in der Methode {@link Model#lagerAnlegen(String, int, int)} verwendet.
 	 * @param bestand der Bestand eines Lagers wird per int gesetzt
 	 */
 	public void setBestand(int bestand) {
@@ -126,7 +125,7 @@ public class Lager{
 	}
 	/**
 	 *
-	 * Methode zum ausgeben des Elternlagers (siehe Definition Elternlager bei @see {@link Lager#setKindlager(Lager)}). Kann erst nachdem die Methode @see {@link Lager#setKindlager(int)} fehlerfrei
+	 * Methode zum ausgeben des Elternlagers. Kann erst nachdem die Methode setKindlager() fehlerfrei<br>
 	 * ausgeführt werden, da sonst das Elternlager noch nicht gesetzt wurde. 
 	 * @return gibt das Elternlager als Lager-Objekt aus
 	 */
@@ -136,7 +135,7 @@ public class Lager{
 	/**
 	 * Diese Methode setzt das Elternlager eines Lagers.
 	 * Sie wird nur in der Methode {@link Model#lagerLoeschen(Lager, Lager)} verwendet.
-	 * @param l
+	 * @param l Elternlager, das gesetzt wird
 	 */
 	public void setElternlager(Lager l){
 		this.elternlager = l;
@@ -235,18 +234,15 @@ public class Lager{
 			durchlaufenBestand(l, liste);
 		}	
 	}
+	/**
+	 * Diese Methode speichert alle unteren Lager eines Lagers in eine ArrayList.
+	 * @param lager das Lager, unter dem alle Lager in die ArrayList gespeichert werden soll.
+	 * @param liste die ArrayList, in der alle Lager dann stehen.
+	 */
 	public void durchlaufenKindlager(Lager lager, ArrayList<Lager> liste){
 		liste.add(lager);
 		for(Lager l : lager.kindlager){
 			durchlaufenKindlager(l, liste);
-		}
-
-	}
-	public void durchlaufenElternlager(Lager lager, ArrayList<Lager> liste){
-		Lager elternlager = lager.getElternlager();
-		if(elternlager!=null){
-			liste.add(elternlager);
-			durchlaufenElternlager(elternlager, liste);
 		}
 	}
 }		

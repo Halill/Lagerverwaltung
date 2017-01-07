@@ -8,72 +8,82 @@ import view.Buchen;
 import view.Deliverys;
 import view.Warehouse;
 import view.Welcome;
-
+/**
+ * Die Klasse Controller beinhaltet die Main-Methode, in der initial das Fenster "Welcome" geöffnet wird. Des Weiteren sind Methoden zur Steuerung der einzelnen
+ * Fenster vorhanden.
+ * @author Halil
+ *
+ */
 public class Controller {
 
 	
 	private static Controller instance = new Controller();
 	Warehouse warehouse;
-	
+	/**
+	 * Main-Methode, in der das Fenster "Welcome" initilialisiert wird.
+	 * @param arg0 Argumente die übergeben werden können
+	 */
 	public static void main(String[] arg0){
-//		Model m = new Model();
-
-
-		
-		//hier wird die Lagerstruktur generiert
-//		m.legeInitialeStrukturFest();
-//		File_Manager filemanager = new File_Manager();
-//		ArrayList<Lager> lagerliste = filemanager.load_inventory();
-//
-//		File_Manager filemanager1 = new File_Manager();
-//		ArrayList<Lager> lagerliste1 = filemanager1.load_inventory();
-//		m.setLagerliste(lagerliste1);
-//
-//		m.sysoLagerstruktur(lagerliste1);
 		
 		Welcome welcome = new Welcome();
 		welcome.frame.setVisible(true);
 
 	}
-	
+	/**
+	 * Methode zum erstellen eines Warehouse Fensters. Diese Methode wird genommen, falls Warehouse zum ersten mal aufgerufen wurde. Der Aufruf von Warehouse <br>
+	 * wird in der Warehouse Klasse selbst detaillierter beschrieben.
+	 */
 	public void openWarehouse()
 	{
 		warehouse = new Warehouse();
 		warehouse.frame.setVisible(true);		
 		ObserverTree.getInstance().addObserver(warehouse);
 	}
-	
+	/**
+	 * Methode zum erstellen eines Warehouse Fensters. Diese Methode wird benutzt, wenn die Lagerstruktur sich verändert hat.
+	 * @param lager die ArrayList in der sich die Lagerstruktur befindet
+	 */
 	public void openWarehouse(ArrayList<Lager> lager)
 	{
 		warehouse = new Warehouse(lager);
 		warehouse.frame.setVisible(true);		
 		ObserverTree.getInstance().addObserver(warehouse);
 	}
-	
+	/**
+	 * Methode zum erstellen eines Buchen Fensters.
+	 */
 	public void openBuchen()
 	{
 		Buchen window = new Buchen(warehouse);
 		window.frame.setVisible(true);		
 		ObserverTree.getInstance().addObserver(window);
 	}
-	
+	/**
+	 * Methode zum erstellen eines Delivery Fensters.
+	 */
 	public void openDelivery()
 	{
 		Deliverys window = new Deliverys();
 		window.frame.setVisible(true);;
 	}
-
+	/**
+	 *  Getter-Methode für das Attribut instance vom Typ Controller. Wird benötigt, um den Wechsel zwischen Fenster zu ermöglichen.
+	 * @return gibt die aktelle instance aus
+	 */
 	public static Controller getInstance() {
 		return instance;
 	}
-
+	/**
+	 * Setter-Methode für das Attribut instance vom Typ Controller.
+	 * @param instance setzt die aktuelle instance
+	 */
 	public static void setInstance(Controller instance) {
 		Controller.instance = instance;
 	}
 
 }	
 
-	//Halils Sammelkiste:
+	//Halils Sammelkiste zum testen diverser Methoden:
 	
 	//Lager neuesLager = m.lagerAnlegen("neues Lager", 0, 0);
 
@@ -95,41 +105,20 @@ public class Controller {
 	//Test für Fall 3: Das Lager MV wird gelöscht
 	//m.lagerLoeschen(m.getLagerliste().get(8));
 
-	//System.out.print(m.addiereRestLagerBestand(m.getLagerliste()));
-
 	//hier wird die Lagerstruktur generiert
 	//m.legeInitialeStrukturFest();
-	
-	
-	//Das wird alles für eine Buchung benötigt:
-	//Buchung b = m.neueBuchung(500);
-	//b.fuegeLagerzuBuchungHinzu(m.getLagerliste().get(6));
-	//b.fuegeLagerzuBuchungHinzu(m.getLagerliste().get(7));
-	//b.fuegeLagerzuBuchungHinzu(m.getLagerliste().get(8));
-	//b.setBuchungstyp(Buchung.ZUBUCHUNG);
-	//Gesamtbuchungsliste des Models, in der alle Buchungen enthalten sind:
-	//m.sysoBuchungsliste(m.getBuchungliste());
-	//Liste von Lagern die zur Buchung b gehören:
-	//m.sysoLagerstruktur(b.getBuchungLagerListe());
-	
-	
-	//Festlegen eines Schlüssels für Verteilung:
-	//Double[] schluessel = new Double[]{0.25,0.2,0.55};
-	//b.setVerteilungsschluessel(schluessel);
-	//Fuehrt die Buchung schlussendlich aus:
-	//m.fuehreBuchungenaus();
-
-	
-	//ArrayList<Buchung> buchungsliste = m.getLagerliste().get(6).getBuchungsliste();
-	//Buchungsliste des Lagers Hessen:
-	//m.sysoBuchungsliste(buchungsliste);
-
-	
+		
 
 	//hier ist die gesamte Lagerliste für die View
 	//m.getLagerliste();
 
-	//Methode für mich zum überprüfen, ob die richtige Lagerstruktur erscheint.
-	//m.sysoLagerstruktur(m.getLagerliste());
+	//m.legeInitialeStrukturFest();
+	//File_Manager filemanager = new File_Manager();
+	//ArrayList<Lager> lagerliste = filemanager.load_inventory();
 	
+	//File_Manager filemanager1 = new File_Manager();
+	//ArrayList<Lager> lagerliste1 = filemanager1.load_inventory();
+	//m.setLagerliste(lagerliste1);
+	
+	//m.sysoLagerstruktur(lagerliste1);	
 

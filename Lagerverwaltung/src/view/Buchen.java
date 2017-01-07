@@ -41,7 +41,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import java.text.SimpleDateFormat;
-
+/**
+ * Im Fenster Buchen können Buchungen auf Lager erfolgen. Als erstes wird eine Buchungsmenge bestimmt, danach wird der Buchungsanteil bestimmt.<br>
+ * Beim Klicken auf ein Lager wird diese prozentuale Menge auf dieses Lager gebucht. Unten links stehen eventuelle Fehlermeldungen oder wie viel noch gebucht werden kann.<br>
+ * Des Weitern gibt es einen "vor" und "zurück" Button, der das hin und her laufen zwischen Buchungsschritte ermöglicht.<br>
+ * Wird der Button buchen gedrückt werden endgültig die Buchungen durchgeführt.
+ */
 public class Buchen extends Warehouse{
 
 	public JFrame frame;
@@ -61,33 +66,15 @@ public class Buchen extends Warehouse{
     private JLabel info_Label;
     
 	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					Buchen window = new Buchen(frame);
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//
-//				}
-//			}
-//		});
-//	}
-
-	/**
-	 * Create the application.
-	 * @param Frame übergeben
+	 * Konstruktor für die Klasse. Übergeben wird das Warehouse Fenster.
+	 * @param wareh  das Fenster Warehouse wird übergeben
 	 */
 	public Buchen(Warehouse wareh) {
 		warehouse = wareh;
 		initialize();	
 	}
-
 	/**
-	 * Initialize the contents of the frame.
+	 * In dieser Methode wird das komplette Fenster initialisiert.
 	 */
 	private void initialize() {	
 		
@@ -385,8 +372,9 @@ public class Buchen extends Warehouse{
 		info_Label.setBounds(10, 394, 378, 25);
 		frame.getContentPane().add(info_Label);
 	}
-	
-
+	/**
+	 * Methode, in der das Attribut capacity und currentUnits bestimmt wird. Es werden hierbei alle Lager berücksichtigt.
+	 */
 	private void getAllCapacity() {
 		
 		capacity = 0;
@@ -405,7 +393,15 @@ public class Buchen extends Warehouse{
 		System.out.println(capacity + " Einheiten können noch verteilt werden und " + currentUnits + " Einheiten sind vorhanden");
 		canBook = true;
 	}
-	
+	/**
+	 * Methode, die beim Klicken auf ein Lager im Buchen Fenster ausgeführt wird. <br>
+	 * Hier werden auch die Buchungsbedinungen überprüft:<br>
+	 * - das ausgewählte Lager besitzt keine Kindlager.<br>
+	 * - ein Lager überhaupt wurde ausgewählt  oder es gibt eine Restbuchungsmenge, die zu verteilen wäre.<br>
+	 * - ausreichend Kapazität im Lager<br>
+	 * - die Buchungsmenge als ganze Zahle gebucht wird<br>
+	 * Diese Methode wird für Zubuchungen gebraucht.
+	 */
 	private void buche_auf_Lager() 
 	{				
 		double menge = ((double)percent_Step * all_Units) / 100.0;
@@ -418,7 +414,7 @@ public class Buchen extends Warehouse{
 		
 		if(l.getKindlager().size() > 0)
 		{
-			setInfoLabel("Bitte ein Lager auswählen was auch verwalted werden kann", Color.red);
+			setInfoLabel("Bitte ein Lager auswählen, das auch verwaltet werden kann", Color.red);
 			return;
 			//buche_auf_Kinder(l,units_left,m,menge,0);	//Diese Methode wurde aus Zeit gründen nicht Fertiggestellt. Funktioniert nur mit kleinen Abweichungen
 		}
@@ -469,7 +465,7 @@ public class Buchen extends Warehouse{
 		}
 		else 
 		{
-			setInfoLabel("1 Einheit kann nur als ganzes verwalted werden. Ab 50% aufrunden.",Color.red);
+			setInfoLabel("Eine Einheit kann nur als ganzes verwaltet werden. Ab 50% aufrunden.",Color.red);
 			return;
 		}
 				
@@ -501,8 +497,15 @@ public class Buchen extends Warehouse{
 		
 		
 	}
-	
-	
+	/**
+	 * Methode, die beim Klicken auf ein Lager im Buchen Fenster ausgeführt wird. <br>
+	 * Hier werden auch die Buchungsbedinungen überprüft:<br>
+	 * - das ausgewählte Lager besitzt keine Kindlager.<br>
+	 * - ein Lager überhaupt wurde ausgewählt  oder es gibt eine Restbuchungsmenge, die zu verteilen wäre.<br>
+	 * - ausreichend Bestand im Lager<br>
+	 * - die Buchungsmenge als ganze Zahle gebucht wird<br>
+	 * Diese Methode wird für Abbuchungen gebraucht.
+	 */
 	private void lösche_von_Lager() 
 	{
 		double menge = ((double)percent_Step * all_Units *-1) / 100.0;
@@ -515,7 +518,7 @@ public class Buchen extends Warehouse{
 		
 		if(l.getKindlager().size() > 0)
 		{
-			setInfoLabel("Bitte ein Lager auswählen was auch verwalted werden kann", Color.red);
+			setInfoLabel("Bitte ein Lager auswählen was auch verwaltet werden kann", Color.red);
 			return;
 			//buche_auf_Kinder(l,units_left,m,menge,0);	//Diese Methode wurde aus Zeit gründen nicht Fertiggestellt. Funktioniert nur mit kleinen Abweichungen
 		}
@@ -597,107 +600,10 @@ public class Buchen extends Warehouse{
 		setInfoLabel("Einheiten wurden verteilt",Color.black);
 		
 	}	
-	
-	
-	//Folgende Methode ist für die Verteilung auf Kindlager zustädnig wenn ein Root oder Treelager ausgewält wurde
-	//Da dies keine Anforderung war und diese Methode nicht ganz Fehlerfrei läuft wurde es aus Zeitgründen eingestellt 
-//	private void buche_auf_Lager(Lager l,int units_left, int offset) 
-//	{				
-//		double menge = ((double)percent_Step * all_Units) / 100.0;
-//		int m = (int)menge;
-//		int freeUnits;
-//	
-//		Book b = new Book();
-//				
-//		units_left += offset;
-//		
-//		if(l == null || units_left <= 0)
-//			return;
-//		freeUnits =  l.getKapazitaet() - l.getBestand();
-//		
-//		if(menge >= 0.5 && menge < 1.0 && units_left > 0)
-//		{
-//			if(freeUnits >= 1)
-//				b.setMenge(1);
-//			else
-//				return;
-//			units_left--;		
-//		}
-//		else if(m > 0)
-//		{
-//			if (units_left >= m) 
-//			{			
-//				if(freeUnits >= m)
-//					b.setMenge(m);
-//				else
-//					return;
-//				
-//				units_left -= m;
-//			}
-//			else
-//			{
-//				if(freeUnits >= units_left)
-//					b.setMenge(units_left);
-//				else
-//					return;			
-//				units_left = 0;
-//			}
-//		}
-//		else 
-//		{
-//			setInfoLabel("Eine größere Prozentzahl wählen",Color.red);
-//			return;
-//		}
-//		
-//		
-//		textField.setText(units_left + "");
-//		b.execute(l);
-//		commands.add(b);
-//		last_command = b;
-//		stepChanged();
-//		
-//		
-//		History h = new History();
-//		h.setLager(l);
-//		h.setAllowed(true);
-//		h.setNode((DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent());
-//		setDatum();
-//		h.addTransaction(getDatum() + ": " + b.getMenge() + " Einheiten wurden transferiert");
-//		history.add(h);
-//		setInfoLabel("Einheiten wurden verteilt",Color.black);
-//		
-//		
-//	}
-//	
-//	private void buche_auf_Kinder(Lager l, int units_left, int m, double menge, int offset) 
-//	{
-//		
-//		int count = l.getKindlager().size();
-//		int offsets = units_left % count;	
-//		offsets += offset;
-//		
-//		if(offsets == 0)
-//			units_left = units_left / count;
-//		else
-//		{
-//			offset = offsets % count;
-//			offsets = Math.floorDiv(offsets,count) + offset;
-//			
-//			units_left = Math.floorDiv(units_left,count) + offsets;
-//
-//		}
-//		
-//		
-//		for (int i = 0; i < count; i++) 
-//		{
-//			if(l.getKindlager().get(i).getKindlager().size() > 0)
-//				buche_auf_Kinder(l.getKindlager().get(i), units_left, m, menge, offsets);
-//			else
-//				buche_auf_Lager(l,units_left,offsets);
-//		}
-//		
-//	}
-
+	/**
+	 * Getter-Methode für Lager im Jtree. 
+	 * @return Gibt ein Lager-Objekt zurück
+	 */
 	private Lager getLagerFromTree() {
 
 		String index = tree.getLastSelectedPathComponent().toString();
@@ -713,8 +619,11 @@ public class Buchen extends Warehouse{
 		return null;
 		
 	}
-
-	
+	/**
+	 *  Rekursive Methode, die den ganzen Baum beim Öffnen des Fenster aufklappt.
+	 * @param startingIndex Index, von dem gestartet wird. Wird 0 angegeben, wird der ganze Baum aufgeklappt.
+	 * @param rowCount Anzahl Knoten eines Baums.
+	 */
 	private void expandAllNodes(int startingIndex, int rowCount){
 	    for(int i=startingIndex;i<rowCount;++i){
 	        tree.expandRow(i);
@@ -724,15 +633,17 @@ public class Buchen extends Warehouse{
 	        expandAllNodes(rowCount, tree.getRowCount());
 	    }
 	}
-
-	
+	/**
+	 * Aktualisiert das kleine Textfeld, indem angezeigt wird, wie viel Prozent der Gesamtbuchungsmenge auf ein Lager gebucht wird.
+	 */
 	private void stepChanged() {
 		
 		rest_label.setText(percent_Step + "% Schritte von " + all_Units);
 		
 	}
-	
-	
+	/**
+	 * wird aufgerufen, wenn der Button "vor" geklickt wird. Somit wird ein Buchungsschritt vorgegangen.
+	 */
 	private void undo() {
 		int i = commands.indexOf(last_command);
 		commands.get(i).undo();
@@ -746,7 +657,7 @@ public class Buchen extends Warehouse{
 				last_command = null;
 			
 			int units = Integer.parseInt(textField.getText());
-			units += commands.get(i).getUnits();
+			units += commands.get(i).getMenge();
 			textField.setText(units + "");
 			
 			
@@ -762,6 +673,9 @@ public class Buchen extends Warehouse{
 			}
 		}
 	}
+	/**
+	 * wird aufgerufen, wenn der Button "zurück" geklickt wird. Somit wird ein Buchungsschirtt zurückgegangen.
+	 */
 	private void redo() {
 		
 		int i = 0;
@@ -775,7 +689,7 @@ public class Buchen extends Warehouse{
 			last_command = commands.get(i);
 			
 			int units = Integer.parseInt(textField.getText());
-			units -= commands.get(i).getUnits();
+			units -= commands.get(i).getMenge();
 			textField.setText(units + "");
 			
 			commands.get(i).getLager().setBestand(commands.get(i).getLager().getBestand() + commands.get(i).getMenge() * 2);
@@ -791,7 +705,10 @@ public class Buchen extends Warehouse{
 		}
 
 	}
-
+	/**
+	 * aktualisiert das kleine Textfeld unten links, in dem steht wie viele Einheiten noch gebucht werden soll. <br>
+	 * Des Weiteren werden in diesem Textfeld noch weitere Benachrichtigungen angezeigt.
+	 */
 	private void checkTextField() {
 		
 		if(textField.getText().length() == 0 || textField.getText().equals("0"))
@@ -816,7 +733,6 @@ public class Buchen extends Warehouse{
 			canBook = true;
 		}
 	}
-	
 	/**
 	 * Getter-Methode des Buchungsdatums und der Zeit.
 	 * Hier wird auch dies formatiert.
@@ -833,6 +749,11 @@ public class Buchen extends Warehouse{
 		datum = new Date();
 		
 	}
+	/**
+	 * Methode, die das Textfeld unten links aktualisiert. 
+	 * @param info Information, die angezeigt werden soll
+	 * @param color in welcher Farbe die Information angezeigt werden soll.
+	 */
 	public void setInfoLabel(String info,Color color)
 	{
 		if (color != null && info_Label != null)
@@ -842,3 +763,101 @@ public class Buchen extends Warehouse{
 		}
 	}
 }
+//Folgende Methode ist für die Verteilung auf Kindlager zustädnig wenn ein Root oder Treelager ausgewält wurde
+//Da dies keine Anforderung war und diese Methode nicht ganz Fehlerfrei läuft wurde es aus Zeitgründen eingestellt 
+//private void buche_auf_Lager(Lager l,int units_left, int offset) 
+//{				
+//	double menge = ((double)percent_Step * all_Units) / 100.0;
+//	int m = (int)menge;
+//	int freeUnits;
+//
+//	Book b = new Book();
+//			
+//	units_left += offset;
+//	
+//	if(l == null || units_left <= 0)
+//		return;
+//	freeUnits =  l.getKapazitaet() - l.getBestand();
+//	
+//	if(menge >= 0.5 && menge < 1.0 && units_left > 0)
+//	{
+//		if(freeUnits >= 1)
+//			b.setMenge(1);
+//		else
+//			return;
+//		units_left--;		
+//	}
+//	else if(m > 0)
+//	{
+//		if (units_left >= m) 
+//		{			
+//			if(freeUnits >= m)
+//				b.setMenge(m);
+//			else
+//				return;
+//			
+//			units_left -= m;
+//		}
+//		else
+//		{
+//			if(freeUnits >= units_left)
+//				b.setMenge(units_left);
+//			else
+//				return;			
+//			units_left = 0;
+//		}
+//	}
+//	else 
+//	{
+//		setInfoLabel("Eine größere Prozentzahl wählen",Color.red);
+//		return;
+//	}
+//	
+//	
+//	textField.setText(units_left + "");
+//	b.execute(l);
+//	commands.add(b);
+//	last_command = b;
+//	stepChanged();
+//	
+//	
+//	History h = new History();
+//	h.setLager(l);
+//	h.setAllowed(true);
+//	h.setNode((DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent());
+//	setDatum();
+//	h.addTransaction(getDatum() + ": " + b.getMenge() + " Einheiten wurden transferiert");
+//	history.add(h);
+//	setInfoLabel("Einheiten wurden verteilt",Color.black);
+//	
+//	
+//}
+//
+//private void buche_auf_Kinder(Lager l, int units_left, int m, double menge, int offset) 
+//{
+//	
+//	int count = l.getKindlager().size();
+//	int offsets = units_left % count;	
+//	offsets += offset;
+//	
+//	if(offsets == 0)
+//		units_left = units_left / count;
+//	else
+//	{
+//		offset = offsets % count;
+//		offsets = Math.floorDiv(offsets,count) + offset;
+//		
+//		units_left = Math.floorDiv(units_left,count) + offsets;
+//
+//	}
+//	
+//	
+//	for (int i = 0; i < count; i++) 
+//	{
+//		if(l.getKindlager().get(i).getKindlager().size() > 0)
+//			buche_auf_Kinder(l.getKindlager().get(i), units_left, m, menge, offsets);
+//		else
+//			buche_auf_Lager(l,units_left,offsets);
+//	}
+//	
+//}

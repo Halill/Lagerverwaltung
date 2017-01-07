@@ -1,12 +1,12 @@
 package model;
+
+import java.util.ArrayList;
+
 /**
  * Die Klasse Model im Package model.
  * 
  * In dieser Klasse wird die Lagerstruktur festgelegt. Hier sind Methoden, die diese verändern.
  */
-import java.util.ArrayList;
-
-
 public class Model{
 	
 	/**Liste aller Lager, die in der Lagerstruktur enthalten sind.*/
@@ -44,7 +44,7 @@ public class Model{
 	}
 	/**
 	 * Methode, die eine komplette Lagerstruktur übergibt.
-	 * @param lagerliste
+	 * @param lagerliste Lagerliste, die die aktuelle Lagerliste überschreibt
 	 */
 	public void setLagerliste(ArrayList<Lager> lagerliste) {
 		this.lagerliste = lagerliste;
@@ -264,16 +264,4 @@ public class Model{
 		}
 		lagerliste = sortiereLagerliste(lagerliste);
 	}
-	/**
-	 * Prüft, ob die Menge einer Buchung nicht die Restkapazitäten des Rootlagers übersteigen
-	 * @param menge Buchungsmenge einer Buchung
-	 * @return gibt true aus, falls die Prüfung erfolgreich war (also das die Buchungsmenge kleinergleich dem Restbestand ist)
-	 */
-	public Boolean pruefeBuchungsmenge(int menge){
-		if(addiereRestLagerBestand(lagerliste)<=menge) return false;
-		else return true;
-	}
-
-	
-
 }
